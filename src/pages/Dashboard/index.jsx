@@ -13,8 +13,8 @@ const Dashboard = () => {
     const savedRole = localStorage.getItem("userRole");
 
     // Si no hay rol guardado en localStorage, redirigir al componente de roles
-    if (!savedRole) {
-      navigate("/roles");
+    if (savedRole) {
+      navigate("/dashboard");
     }
   }, [navigate]);
 

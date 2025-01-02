@@ -37,6 +37,7 @@ const AppRoutes = () => {
                 element={<Registro />}
                 errorElement={<ErrorBoundary />}
               />
+            <Route path="/" element={<Navigate to="/login" />} />
             <Route
               path="/login"
               element={<Login />}

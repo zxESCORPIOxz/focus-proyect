@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const defaultImage = "../assets/institucion.webp";
+const defaultImage = "https://108.181.169.248/assets/institucion.webp";
 
 const Rol = () => {
   const { user, roles, token, loading, error } = useAuthContext();

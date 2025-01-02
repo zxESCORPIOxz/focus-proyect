@@ -13,8 +13,8 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 
-const defaultImage = "../assets/institucion.webp";
-const defaultUser = "../assets/User2.png";
+const defaultImage = "https://108.181.169.248/assets/institucion.webp";
+const defaultUser = "https://108.181.169.248/assets/User2.png";
 
 const Menu = ({ activeOption, setActiveOption }) => {
   const navigate = useNavigate();
@@ -87,7 +87,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
         {/* Header */}
         <div className="w-full md:w-auto flex items-center justify-center space-x-4 ml-4 mr-4 mt-3">
           <img
-            src="../assets/icon_focusclass.png"
+            src="https://108.181.169.248/assets/icon_focusclass.png"
             alt="Icono FocusClass"
             className="w-11 h-11 object-contain"
           />

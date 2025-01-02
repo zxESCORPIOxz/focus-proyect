@@ -25,10 +25,23 @@ const FormularioNuevoAlumno = () => {
     institucion: "",
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  const handleSaveDocumento = async (e) => {
+      if (validateForm()) {
+        try {
+          const response = await cambiarContrasena( email,verificationCode,confirmPassword);
+          if (response && response.status === "SUCCESS") {
+            
+            setShowPopupSucces(true);
+          } else {
+            console.error("Error en el registro: ", response.message);
+          }
+        } catch (err) {
+          console.error("Error al registrar usuario", err);
+        }
+      }
+      
+    };
+
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
@@ -41,7 +54,36 @@ const FormularioNuevoAlumno = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center items-center">
       <div className="bg-white p-6 rounded-lg w-[800px] shadow-lg">
-        {step === 1 && (
+      {step === 1 && (
+          <form onSubmit={handleSaveDocumento} className="">
+          <div className="text-left">
+            <label htmlFor="email" className="block text-sm font-medium text-blue-600 mb-2">
+              Correo electrónico
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Ingresa tu email"
+             
+              required
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 text-gray-700"
+            />
+            {/* {validateCorreo(email) && (
+            <p className="ml-1 text-red-500 text-sm mt-2">{validateCorreo(email)}</p>
+          )} */}
+          </div>
+          
+          <button
+            type="submit"
+            className="w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
+          >
+            Verificar correo
+          </button>
+        </form>
+        )}
+        {step === 2 && (
           <>
             
             
@@ -63,7 +105,7 @@ const FormularioNuevoAlumno = () => {
             </div>
           </>
         )}
-        {step === 2 && (
+        {step === 3 && (
           <>
             <h2 className="text-lg font-bold mb-4">Paso 2: Información Académica</h2>
             <form className="space-y-4">

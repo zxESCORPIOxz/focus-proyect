@@ -60,7 +60,7 @@ const Login = () => {
           <div className="relative bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] rounded-lg shadow-lg p-6 flex items-center justify-center text-white">
             <div className="relative z-10 text-center">
               <img 
-                src='../assets/icon_focusclass.png' 
+                src='https://108.181.169.248/assets/icon_focusclass.png' 
                 alt="Icono FocusClass" 
                 className="mx-auto w-20 h-20 object-contain mb-3"
               />
@@ -113,10 +113,15 @@ const Login = () => {
           <button
             type="button"
             onClick={handleRegistroClick}
-            className="w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
+            disabled={loading} // Deshabilita el botón cuando loading es true
+            className={`w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg transition duration-300 ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-500"
+            }`}
           >
             Registrarse
           </button>
+
+
 
 
           <a

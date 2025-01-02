@@ -38,7 +38,7 @@
 import React, { useState } from 'react';
 import { FaBell } from 'react-icons/fa';
 
-const defaultUser = "../assets/User4.png";
+const defaultUser = "https://108.181.169.248/assets/User4.png";
 
 const Header = () => {
   const [isMenuOpen, setMenuOpen] = useState(false);
