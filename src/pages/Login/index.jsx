@@ -60,7 +60,7 @@ const Login = () => {
           <div className="relative bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] rounded-lg shadow-lg p-6 flex items-center justify-center text-white">
             <div className="relative z-10 text-center">
               <img 
-                src='../src/assets/icon_focusclass.png' 
+                src='../assets/icon_focusclass.png' 
                 alt="Icono FocusClass" 
                 className="mx-auto w-20 h-20 object-contain mb-3"
               />

@@ -13,7 +13,7 @@ const PopupError = ({ message, onClose }) => {
                 role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                 <div>
                     <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-b from-[#5155A6] to-[#4B7DBF]">
-                    <img src="../src/assets/exclamacion.svg" alt="Exclamación" className="h-14 w-14" />
+                    <img src="../assets/exclamacion.svg" alt="Exclamación" className="h-14 w-14" />
 
                     </div>
                     <div class="mt-3 text-center sm:mt-5">

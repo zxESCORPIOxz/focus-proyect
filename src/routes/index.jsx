@@ -2,9 +2,10 @@ import React, { lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import ErrorBoundary from '../components/ErrorBoundary';
-import { AuthProvider, useAuthContext } from '../context/AuthContext';
+
 import LoadingSpinner from '../components/LoadingSpinner';
-import { RegisterProvider } from '../context/RegisterContext';
+import { useAuthContext } from '../context/AuthContext';
+
 
 const Login = lazy(() => import('../pages/Login'));
 const Rol = lazy(() => import('../pages/Rol'));

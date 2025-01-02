@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useAuthContext } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const defaultImage = "../src/assets/institucion.webp";
+const defaultImage = "../assets/institucion.webp";
 
 const Rol = () => {
   const { user, roles, token, loading, error } = useAuthContext();
@@ -31,13 +31,15 @@ const Rol = () => {
 
   const groupedEntities = groupByRole(entities);
 
-  const handleRoleClick = (role,institutionName) => {
+  const handleRoleClick = (role, institutionName) => {
     // Guarda el rol en el localStorage y redirige al dashboard
     localStorage.setItem("userRole", role);
     localStorage.setItem("institucion", institutionName);
-    
+  
+    // Redirige al Dashboard después de guardar el rol
     navigate("/dashboard");
   };
+  
 
   return (
     <div className="flex flex-col items-center p-4">
