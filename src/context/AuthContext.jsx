@@ -13,6 +13,8 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+
+    setLoading(true);
     const savedUser = localStorage.getItem("user");
     const savedToken = localStorage.getItem("token");
 
@@ -23,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       
     } else {
       console.warn("No se encontró información del usuario en localStorage");
-      navigate("/");                             
+      // navigate("/");                             
     }
     setLoading(false);
   }, []);

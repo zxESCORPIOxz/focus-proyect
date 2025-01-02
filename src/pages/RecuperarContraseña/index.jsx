@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { verificarEnviarCorreo } from "../../lib/apiVerificarEnviarCorreo";
 import PopupSuccesGeneral from "../../Popups/SuccesGeneral";
 import PopupErrorRegister from "../../Popups/RegistroError";
-import { cambiarContraseña } from "../../lib/apiCambiarContraseña";
+import { cambiarContrasena } from "../../lib/apiCambiarContraseña";
 
 const RecuperarContraseña = () => {
   const [email, setEmail] = useState("");
@@ -43,11 +43,20 @@ const RecuperarContraseña = () => {
         setModalMessageError(response.message)
         setShowErrorPopup(true)
       }
-    } catch (error) {
-      
+    } catch (error) { 
+      console.error(error);
+      setModalMessageError("Ha ocurrido un error, por favor intenta nuevamente.");
+      setShowErrorPopup(true);
     }
     console.log("Verifying email:", email);
     
+  };
+
+  const validateCorreo = (email) => {
+    if (!email) return "El correo no puede estar vacío.";
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!isValidEmail) return "El correo no es válido.";
+    return "";
   };
 
   const validatePasswords = () => {
@@ -57,17 +66,21 @@ const RecuperarContraseña = () => {
 
   const validateForm = () => {
     const errors = {};
+    const correoError = validateCorreo(email);
+    if (correoError) errors.correo = correoError;
+  
     const passwordError = validatePasswords();
     if (passwordError) errors.password = passwordError;
-
+  
     setErrorMessage(errors);
     return Object.keys(errors).length === 0;
-  }
+  };
+  
 
   const handleSavePassword = async (e) => {
     if (validateForm()) {
       try {
-        const response = await cambiarContraseña(email,);
+        const response = await cambiarContrasena( email,verificationCode,confirmPassword);
         if (response && response.status === "SUCCESS") {
           onFormValidation(true);
           setShowPopupSucces(true);
@@ -78,7 +91,7 @@ const RecuperarContraseña = () => {
         console.error("Error al registrar usuario", err);
       }
     }
-    navigate("/");
+    // navigate("/");
   };
 
   return (
@@ -114,7 +127,11 @@ const RecuperarContraseña = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 text-gray-700"
               />
+              {validateCorreo(email) && (
+              <p className="ml-1 text-red-500 text-sm mt-2">{validateCorreo(email)}</p>
+            )}
             </div>
+            
             <button
               type="submit"
               className="w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
@@ -151,13 +168,13 @@ const RecuperarContraseña = () => {
                 id="newPassword"
                 name="newPassword"
                 placeholder="Ingresa tu nueva contraseña"
-                value={newPassword}
+                value={password}
                 required
-                onChange={(e) => setNewPassword(e.target.value)}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 text-gray-700"
               />
             </div>
-
+            
             <div className="text-left">
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-blue-600 mb-2">
                 Confirmar contraseña
@@ -173,6 +190,9 @@ const RecuperarContraseña = () => {
                 className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-indigo-600 text-gray-700"
               />
             </div>
+            {validatePasswords() && (
+              <p className="ml-1 text-red-500 text-sm mt-2">{validatePasswords()}</p>
+            )}
 
             <button
               type="submit"

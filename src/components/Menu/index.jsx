@@ -29,7 +29,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
 
   const handleLogout = () => {
     clearAuth(); // Limpiar la sesión
-    navigate("/"); // Redirigir a la página de login después de cerrar sesión
+    navigate("/login"); // Redirigir a la página de login después de cerrar sesión
   };
 
   const handleNavigate = (id) => {

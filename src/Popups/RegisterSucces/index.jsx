@@ -10,8 +10,9 @@ const PopupSuccesRegister = ({ message, onClose }) => {
     // Condicional para determinar la página actual
     if (location.pathname === '/registro') {
       onClose();
-      navigate("/");
+      navigate("/login");
     } else if (location.pathname === '/dashboard') {
+      navigate("/dashboard");
       onClose();
     }
   };

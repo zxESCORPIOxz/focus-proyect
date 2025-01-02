@@ -1,4 +1,4 @@
-export const cambiarContraseña = async (email,codigoRecuperacion,nuevaContraseña) => {
+export const cambiarContrasena = async (email,codigoRecuperacion,nuevaContraseña) => {
     const response = await fetch(
       "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/lambda-05-CambiarContraConCodigo",
       {

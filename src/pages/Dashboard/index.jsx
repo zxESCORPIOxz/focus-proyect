@@ -8,22 +8,20 @@ const Dashboard = () => {
   const { user, roles,token,error, loading } = useAuthContext();
   const navigate = useNavigate();
   useEffect(() => {
-      if (loading) {
-        console.log("Cargando...");
-      }
-      if (error) {
-        console.error("Error:", error);
-      }
-    }, [loading, error]);
+    if (loading) {
+      console.log("Cargando...");
+    }
+    if (error) {
+      console.error("Error:", error);
+    }
 
-    useEffect(() => {
-
-      if (loading) return;
-
-      if (!user || !roles.length) {
-        navigate("/"); 
-      }
-    }, [user, roles, loading, navigate]);
+    // Verificar si el rol está en localStorage o contexto
+    const savedRole = localStorage.getItem("userRole");
+    if (!savedRole) {
+      // Si no hay rol guardado, redirigir al login o roles
+      navigate("/roles");
+    }
+  }, [loading, error, navigate]);
 
   
   return (
