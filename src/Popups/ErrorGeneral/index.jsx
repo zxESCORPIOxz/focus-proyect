@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const PopupSuccesGeneral = ({ message }) => {
+const PopupErrorGeneral = ({ message }) => {
 
 
 
@@ -17,16 +17,16 @@ const PopupSuccesGeneral = ({ message }) => {
                 role="dialog" aria-modal="true" aria-labelledby="modal-headline">
                 <div>
                     <div className="mx-auto flex items-center justify-center h-14 w-14 rounded-full bg-gradient-to-b from-[#5155A6] to-[#4B7DBF]">
-                    <img src="https://108.181.169.248/assets/check.svg" alt="Exclamación" className="h-8 w-8" />
+                    <img src="https://108.181.169.248/assets/exclamacion.svg" alt="Exclamación" className="h-14 w-14" />
 
                     </div>
                     <div className="mt-3 text-center sm:mt-5">
                         <h3 className="text-3xl leading-6 font-bold text-black" id="modal-headline">
-                            Acción realizada exitosamente
+                            Ups, algo salio mal !
                         </h3>
                         <div className="mt-2">
                             <p className="text-base mt-5 text-gray-700">
-                            {message || "Exito"}
+                            {message || "Ha ocurrido un error inesperado"}
                             </p>
                         </div>
                     </div>
@@ -39,4 +39,4 @@ const PopupSuccesGeneral = ({ message }) => {
   );
 };
 
-export default PopupSuccesGeneral;
+export default PopupErrorGeneral;
