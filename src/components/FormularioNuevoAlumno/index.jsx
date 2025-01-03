@@ -212,7 +212,7 @@ const FormularioNuevoAlumno = () => {
         )}
         {step === 3 && (
           <>
-            <h1 className="text-3xl font-bold mb-6 text-blue-600">Paso 2: Información Académica</h1>
+            <h1 className="text-3xl font-bold mb-6 text-blue-600">Paso 3: Información Académica</h1>
             
             <form className="space-y-4">
               <input

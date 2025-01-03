@@ -36,10 +36,11 @@ const RecuperarContraseña = () => {
         setShowPopupSucces(true)
         setTimeout(() => {
           setShowPopupSucces(false);
+          setModalMessageSucces("");
           setStep(2);
         }, 2500);
       }else if (response.status === "FAILED") {
-        console.log(response)
+        
         setModalMessageError(response.message)
         setShowErrorPopup(true)
       }
@@ -75,23 +76,44 @@ const RecuperarContraseña = () => {
     setErrorMessage(errors);
     return Object.keys(errors).length === 0;
   };
+
+  const isSaveDisabled = () => {
+    return (
+      !verificationCode || 
+      !password ||         
+      !confirmPassword ||  
+      password !== confirmPassword
+    )
+  };
   
 
   const handleSavePassword = async (e) => {
-    if (validateForm()) {
+    e.preventDefault();
+    if (!isSaveDisabled()) {
       try {
-        const response = await cambiarContrasena( email,verificationCode,confirmPassword);
+        const response = await cambiarContrasena(
+          email,
+          verificationCode,
+          confirmPassword
+        );
         if (response && response.status === "SUCCESS") {
-          onFormValidation(true);
           setShowPopupSucces(true);
+          setModalMessageSucces(response.message)
+          setTimeout(() => {
+            setShowPopupSucces(false);
+            setModalMessageSucces(""); 
+            navigate("/login"); 
+          }, 2500);
         } else {
-          console.error("Error en el registro: ", response.message);
+          setModalMessageError(response.message);
+          setShowErrorPopup(true);
         }
       } catch (err) {
-        console.error("Error al registrar usuario", err);
+        console.error("Error al cambiar contraseña", err);
+        setModalMessageError("Ha ocurrido un error. Por favor, intenta de nuevo.");
+        setShowErrorPopup(true);
       }
     }
-    // navigate("/");
   };
 
   return (
@@ -193,10 +215,13 @@ const RecuperarContraseña = () => {
             {validatePasswords() && (
               <p className="ml-1 text-red-500 text-sm mt-2">{validatePasswords()}</p>
             )}
-
+            
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
+              disabled={isSaveDisabled()}
+              className={`w-full py-3 font-medium text-lg rounded-lg transition duration-300 ${
+                isSaveDisabled() ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-indigo-500 text-white"
+              }`}
             >
               Guardar contraseña
             </button>

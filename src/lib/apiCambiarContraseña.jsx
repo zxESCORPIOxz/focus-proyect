@@ -1,4 +1,4 @@
-export const cambiarContrasena = async (email,codigoRecuperacion,nuevaContraseña) => {
+export const cambiarContrasena = async (email,codigo_recuperacion,nueva_contrasena) => {
     const response = await fetch(
       "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/lambda-05-CambiarContraConCodigo",
       {
@@ -6,7 +6,7 @@ export const cambiarContrasena = async (email,codigoRecuperacion,nuevaContraseñ
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email,codigoRecuperacion,nuevaContraseña}),
+        body: JSON.stringify({ email,codigo_recuperacion,nueva_contrasena}),
       }
     );
   
