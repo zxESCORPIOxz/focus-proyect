@@ -31,10 +31,11 @@ const Rol = () => {
 
   const groupedEntities = groupByRole(entities);
 
-  const handleRoleClick = (role, institutionName) => {
+  const handleRoleClick = (role, institutionName,id_institucion) => {
     // Guarda el rol en el localStorage y redirige al dashboard
     localStorage.setItem("userRole", role);
     localStorage.setItem("institucion", institutionName);
+    localStorage.setItem("id_institucion",id_institucion)
   
     // Redirige al Dashboard después de guardar el rol
     navigate("/dashboard");
@@ -56,7 +57,7 @@ const Rol = () => {
                   className={`bg-white border rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow flex items-center cursor-pointer ${
                     idx % 3 === 0 ? "md:col-start-2" : ""
                   }`}
-                  onClick={() => handleRoleClick(role, entity.nombre_ie)}  // Se pasa el rol al hacer clic
+                  onClick={() => handleRoleClick(role, entity.nombre_ie,entity.id_institucion)}  // Se pasa el rol al hacer clic
                 >
                   {/* Logo de la institución a la izquierda */}
                   <div className="mr-4">
