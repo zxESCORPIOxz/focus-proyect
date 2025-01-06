@@ -19,7 +19,7 @@ const ContenidoAlumnos = () => {
   const navigate = useNavigate();
 
   //PAGINACION
-  const itemsPerPage = 6; // Elementos por página
+  const itemsPerPage = 9; // Elementos por página
   const [currentPage, setCurrentPage] = useState(1); // Página actual
 
   // Función para manejar el cambio de página
@@ -166,10 +166,13 @@ const ContenidoAlumnos = () => {
                 </div>
               </div>
 
-              <div className="overflow-auto mb-0 flex-1">
-                {loading ? (
-                  <LoadingSpinner/>
-                ) : (
+              <div className="flex-1 overflow-auto mb-0">
+              {loading ? (
+                <div className="overflow-auto mb-0 flex-1">
+                  <LoadingSpinner />
+                </div>
+              ) : (
+                <>
                   <table className="w-full text-left border-collapse border border-gray-300">
                     <thead className="bg-gray-100">
                       <tr>
@@ -185,7 +188,9 @@ const ContenidoAlumnos = () => {
                     <tbody>
                       {currentAlumnos.map((alumno) => (
                         <tr key={alumno.id_alumno}>
-                          <td className="p-3 border-b text-center border-gray-300">{alumno.nombre + " " + alumno.apellido_paterno + " " + alumno.apellido_materno }</td>
+                          <td className="p-3 border-b text-center border-gray-300">
+                            {alumno.nombre + " " + alumno.apellido_paterno + " " + alumno.apellido_materno}
+                          </td>
                           <td className="p-3 border-b text-center border-gray-300">{alumno.nombre_matricula}</td>
                           <td className="p-3 border-b text-center border-gray-300">{alumno.nombre_grado}</td>
                           <td className="p-3 border-b text-center border-gray-300">{alumno.nombre_seccion}</td>
@@ -206,37 +211,46 @@ const ContenidoAlumnos = () => {
                       ))}
                     </tbody>
                   </table>
-                          )}
-                
-              </div>
-              <div className="flex justify-center items-center mt-4">
-                <button
-                  onClick={handlePrevPage}
-                  className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  disabled={currentPage === 1}
-                >
-                  Anterior
-                </button>
+                </>
+              )}
+            </div>
 
-                {/* Mostrar los botones de números de página */}
-                {Array.from({ length: totalPages }).map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handlePageChange(index + 1)}
-                    className={`mx-2 px-4 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-[#5155A6] text-white' : 'bg-[#4B7DBF] text-white hover:bg-[#3A6B9F]'}`}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
+            {/* Botones de Paginación */}
+            <div className="flex justify-center items-center mt-4">
+              <button
+                onClick={handlePrevPage}
+                className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={currentPage === 1}
+              >
+                Anterior
+              </button>
 
+              {/* Mostrar los botones de números de página */}
+              {Array.from({ length: totalPages }).map((_, index) => (
                 <button
-                  onClick={handleNextPage}
-                  className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                  disabled={currentPage === totalPages}
+                  key={index}
+                  onClick={() => handlePageChange(index + 1)}
+                  className={`mx-2 px-4 py-2 rounded-lg ${currentPage === index + 1 ? 'bg-[#5155A6] text-white' : 'bg-[#4B7DBF] text-white hover:bg-[#3A6B9F]'}`}
                 >
-                  Siguiente
+                  {index + 1}
                 </button>
-              </div>
+              ))}
+
+              <button
+                onClick={handleNextPage}
+                className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={currentPage === totalPages}
+              >
+                Siguiente
+              </button>
+            </div>
+              
+              {showErrorPopup && (
+                <PopupErrorRegister 
+                  message={modalMessageError} 
+                  onClose={handleClosePopupError} 
+                />
+              )}
 
             </>
           )}
