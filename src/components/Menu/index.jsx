@@ -15,7 +15,7 @@ import { useAuthContext } from '../../context/AuthContext';
 import { useRolContext } from '../../context/RolContext';
 import { List } from 'lucide-react';
 
-const defaultImage = "https://108.181.169.248/assets/institucion.webp";
+const defaultImage = "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=institucion";
 const defaultUser = "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=perfil_default";
 
 const Menu = ({ activeOption, setActiveOption }) => {
@@ -103,7 +103,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
         {/* Header */}
         <div className="w-full md:w-auto flex items-center justify-center space-x-4 ml-4 mr-4 mt-3">
           <img
-            src="https://108.181.169.248/assets/icon_focusclass.png"
+            src="https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=icon_focusclass"
             alt="Icono FocusClass"
             className="w-11 h-11 object-contain"
           />
@@ -196,7 +196,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
       </div>
 
       {/* Cerrar sesión */}
-      <div className="flex flex-col mt-4">
+      <div className="flex flex-col mb-2">
         <button
           className="py-3 px-6 flex items-center gap-3 hover:bg-white/20"
           onClick={handleLogout}

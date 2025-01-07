@@ -19,6 +19,10 @@ const ContenidoAlumnos = () => {
   const { institucionId,selectedMatriculaId } = useRolContext();
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [modalMessageError, setModalMessageError] = useState("");
+
+  const [showConfirmacionPopup, setShowConfirmacionPopup] = useState(false);
+  const [modalMessageConfirmacion, setModalMessageConfirmar] = useState("");
+  const [currentAlumnoId, setCurrentAlumnoId] = useState(null);
   
   const [filtroNumeroDocumento, setFiltroNumeroDocumento] = useState("");
   const [status, setStatus] = useState("");
@@ -36,6 +40,8 @@ const ContenidoAlumnos = () => {
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
+
 
   const handleClosePopupError = () => {
     setShowErrorPopup(false);
@@ -60,8 +66,11 @@ const ContenidoAlumnos = () => {
       // Asegurarse de que se actualicen tanto los alumnos como los filtrados
       setAlumnos(updatedAlumnos);
       setFilteredAlumnos(updatedAlumnos); // Esta línea asegura que los alumnos filtrados también se actualicen
-    } else {
-      // Mostrar el error si la desactivación falla
+    } else if(response.status === "LOGOUT"){
+      setStatus("LOGOUT");
+      setModalMessageError(response.message);
+      setShowErrorPopup(true); 
+    }else{
       setModalMessageError(response.message);
       setShowErrorPopup(true);
     }
