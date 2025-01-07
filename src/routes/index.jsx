@@ -5,6 +5,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useAuthContext } from '../context/AuthContext';
+import Rol2 from '../pages/Rol/index2';
 
 
 const Login = lazy(() => import('../pages/Login'));
@@ -47,7 +48,7 @@ const AppRoutes = () => {
               path="/roles"
               element={
                 <ProtectedRoute>
-                  <Rol />
+                  <Rol2 />
                 </ProtectedRoute>
               }
               errorElement={<ErrorBoundary />}

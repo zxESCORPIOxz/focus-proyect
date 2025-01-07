@@ -56,6 +56,7 @@ const FormularioNuevoAlumno = () => {
   const handleClosePopupSucces = () => {
     setShowPopupSucces(false)
   };
+  
   const handleClosePopupError = () => {
 
     if(status === "LOGOUT"){

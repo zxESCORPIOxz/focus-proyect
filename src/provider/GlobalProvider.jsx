@@ -4,6 +4,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ReactNode } from "react"; // Import OrderProvider
 import { AuthProvider } from "../context/AuthContext";
 import { RegisterProvider } from "../context/RegisterContext";
+import { RolProvider } from "../context/RolContext";
 
 const GlobalProvider = ({ children }) => {
 
@@ -13,7 +14,9 @@ const GlobalProvider = ({ children }) => {
       <BrowserRouter>
         <AuthProvider>
           <RegisterProvider>
-            {children}
+            <RolProvider>
+              {children}
+            </RolProvider>
           </RegisterProvider>
         </AuthProvider>
       </BrowserRouter>

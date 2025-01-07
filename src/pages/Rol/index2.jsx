@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import { listarRoles } from "../../lib/apiListarRoles";
 import PopupErrorRegister from "../../Popups/RegistroError";
- // Puedes usar cualquier spinner que prefieras
+import { useRolContext } from "../../context/RolContext"; // Importamos el contexto
 
 const defaultImage = "https://108.181.169.248/assets/institucion.webp";
 
 const Rol = () => {
-  const { token, error,clearAuth } = useAuthContext();
+  const { token, error, clearAuth } = useAuthContext();
+  const { seleccionarRol, setError } = useRolContext(); // Usamos el contexto aquí
   const [loading, setLoading] = useState(true);  
   const [rolesData, setRolesData] = useState([]);
   const navigate = useNavigate();
@@ -23,33 +24,27 @@ const Rol = () => {
       clearAuth(); 
       navigate("/login"); 
     }
-    
   };
 
   useEffect(() => {
-      const fetchRoles = async () => {
-        console.log(token + status)
-        const response = await listarRoles(token);
-        
-        if (response.status === "SUCCESS") {
-          setRolesData(response.entities);
-          console.log( "hola" +response.entities)
-        } else if (response.status === "LOGOUT") {
-          setStatus("LOGOUT");
-          setModalMessageError(response.message);
-          setShowErrorPopup(true); 
-        } else if (response.status === "EMPTY") {
-          setModalMessageError(response.message);
-          setShowErrorPopup(true);
-        }else if(response.status === "FAILED"){
+    const fetchRoles = async () => {
+      const response = await listarRoles(token);
+      
+      if (response.status === "SUCCESS") {
+        setRolesData(response.entities);
+      } else if (response.status === "LOGOUT") {
+        setStatus("LOGOUT");
+        setModalMessageError(response.message);
+        setShowErrorPopup(true); 
+      } else if (response.status === "EMPTY") {
+        setModalMessageError(response.message);
+        setShowErrorPopup(true);
+      }
+      setLoading(false);
+    };
 
-        }
-    
-        setLoading(false);
-      };
-    
-      fetchRoles();
-    }, []);
+    fetchRoles();
+  }, [token]);
 
   const groupByRole = (entities) => {
     return entities.reduce((acc, entity) => {
@@ -65,11 +60,9 @@ const Rol = () => {
   const groupedEntities = groupByRole(rolesData);
 
   const handleRoleClick = (role, institutionName, id_institucion, matriculas) => {
-    localStorage.setItem("userRole", role);
-    localStorage.setItem("institucion", institutionName);
-    localStorage.setItem("id_institucion", id_institucion);
-    localStorage.setItem("matriculas", JSON.stringify(matriculas));
-    navigate("/dashboard");
+    seleccionarRol(role, institutionName,id_institucion, matriculas); 
+    
+    navigate("/dashboard"); // Redirigir directamente después de la selección sin usar localStorage
   };
 
   return (
@@ -86,13 +79,11 @@ const Rol = () => {
         Object.keys(groupedEntities).map((role, index) => (
           <div key={index} className="w-full mt-4">
             <h2 className="text-2xl font-bold text-blue-600 mb-4 md:text-center">{role}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 justify-center lg:justify-start">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 justify-center lg:justify-center">
               {groupedEntities[role].map((entity, idx) => (
                 <div
                   key={idx}
-                  className={`bg-white border rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow flex items-center cursor-pointer ${
-                    idx % 3 === 0 ? "md:col-start-2" : ""
-                  }`}
+                  className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow flex items-center cursor-pointer"
                   onClick={() => handleRoleClick(role, entity.nombre_ie, entity.id_institucion, entity.matriculas)}
                 >
                   <div className="mr-4">
@@ -114,15 +105,13 @@ const Rol = () => {
         ))
       )}
       {showErrorPopup && (
-                <PopupErrorRegister 
-                  message={modalMessageError} 
-                  onClose={handleClosePopupError} 
-                />
-              )}
+        <PopupErrorRegister 
+          message={modalMessageError} 
+          onClose={handleClosePopupError} 
+        />
+      )}
     </div>
   );
-  
-  
 };
 
 export default Rol;

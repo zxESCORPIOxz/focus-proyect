@@ -12,19 +12,26 @@ import {
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
+import { useRolContext } from '../../context/RolContext';
+import { List } from 'lucide-react';
 
 const defaultImage = "https://108.181.169.248/assets/institucion.webp";
-const defaultUser = "https://108.181.169.248/assets/User2.png";
+const defaultUser = "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=perfil_default";
 
 const Menu = ({ activeOption, setActiveOption }) => {
   const navigate = useNavigate();
+  const { matriculas,rolSeleccionado,institucionSeleccionada , selectedMatriculaId, seleccionarMatricula } = useRolContext();
   const { clearAuth } = useAuthContext();
-  const [role, setRole] = useState(null); // Estado para el rol
-
+  const [role, setRole] = useState(null);
+  
+  
+  // console.log("Desde menu el id guardado :"+selectedMatriculaId)
   useEffect(() => {
     // Obtener el rol desde localStorage
-    const storedRole = localStorage.getItem("userRole");
-    setRole(storedRole); // Establece el rol en el estado
+    
+    setRole(rolSeleccionado);
+    
+    
   }, []);
 
   const handleLogout = () => {
@@ -33,12 +40,17 @@ const Menu = ({ activeOption, setActiveOption }) => {
   };
 
   const handleNavigate = (id) => {
+    if (!selectedMatriculaId) {
+      alert("Por favor, seleccione una matrícula antes de continuar.");
+      return;
+  }
     if (id === 'volver') {
       navigate('/roles'); // Redirige a /roles
     } else {
       setActiveOption(id); // Cambia la opción activa
     }
   };
+  
 
   // Menú para Coordinador
   const coordinatorMenuItems = [
@@ -80,7 +92,11 @@ const Menu = ({ activeOption, setActiveOption }) => {
       : role === 'Apoderado'
       ? guardianMenuItems
       : [];
-
+      const handleMatriculaChange = (event) => {
+        const selectedId = event.target.value;
+        seleccionarMatricula(selectedId);
+        // console.log("DESDE MENU:" + selectedId)
+    };
   return (
     <aside className="w-auto bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] text-white flex flex-col justify-between">
       <div>
@@ -110,7 +126,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
           {/* Institución y rol */}
           <div className="flex flex-col items-center justify-start h-16 ">
             <div className="flex items-center space-x-4">
-              <div className="p-2 rounded-lg shadow-lg flex items-center space-x-2 bg-gray-300 h-10 max-w-s w-full">
+              <div className="p-2 rounded-lg shadow-lg flex items-center space-x-2 ">
                 <img
                   src={defaultImage}
                   alt="Logo Institución"
@@ -118,12 +134,12 @@ const Menu = ({ activeOption, setActiveOption }) => {
                   onError={(e) => (e.target.src = defaultImage)}
                 />
                 <div className="flex-1">
-                  <h2 className="text-sm text-black font-bold break-words">{localStorage.getItem("institucion") || "Institución 1"}</h2>
+                  <h2 className="text-base text-gray-200 font-bold break-words mr-1">{institucionSeleccionada|| "Institución 1"}</h2>
                 </div>
               </div>
             </div>
 
-            <div className='flex mt-2 items-center justify-start h-16'>
+            <div className='flex mb-1  items-center justify-start h-16'>
               <div className="p-2 ml-1 rounded-lg shadow-lg flex items-center bg-gray-300 h-10">
                 <h2 className="text-sm text-black font-bold">{role}</h2>
               </div>
@@ -135,14 +151,35 @@ const Menu = ({ activeOption, setActiveOption }) => {
               >
                 <FaSync className="text-lg" />
               </button>
+
+              {matriculas.length > 0 && (
+                <div className="flex items-center justify-start h-16">
+                  <div className="p-2 ml-1 rounded-lg shadow-lg flex items-center bg-gray-300 h-10">
+                    <select
+                      value={selectedMatriculaId}
+                      onChange={handleMatriculaChange}
+                      className="text-sm text-black font-bold bg-transparent outline-none pl-1  border border-gray-300 "
+                    >
+                      {matriculas.map((matricula, index) => (
+                        <option className='pl-2' key={index} value={matricula.id_matricula}>
+                          {matricula.nombre_matricula}
+                        </option>
+                      ))}
+                    </select>
+                   
+                  </div>
+                </div>
+              )}
             </div>
+
+            
 
             
           </div>
         </div>
 
         {/* Menú de Navegación */}
-        <nav className="flex flex-col mt-3">
+        <nav className="flex flex-col mt-5">
           {menuItems.map((item) => (
             <button
               key={item.id}
