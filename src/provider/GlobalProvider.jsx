@@ -5,6 +5,7 @@ import { ReactNode } from "react"; // Import OrderProvider
 import { AuthProvider } from "../context/AuthContext";
 import { RegisterProvider } from "../context/RegisterContext";
 import { RolProvider } from "../context/RolContext";
+import { UserProvider } from "../context/UserContext";
 
 const GlobalProvider = ({ children }) => {
 
@@ -15,7 +16,9 @@ const GlobalProvider = ({ children }) => {
         <AuthProvider>
           <RegisterProvider>
             <RolProvider>
-              {children}
+              <UserProvider>
+                {children}
+              </UserProvider>              
             </RolProvider>
           </RegisterProvider>
         </AuthProvider>

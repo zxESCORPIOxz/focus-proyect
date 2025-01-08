@@ -6,9 +6,15 @@ import PopupSuccesGeneral from "../../Popups/SuccesGeneral";
 import { useNavigate } from "react-router-dom";
 import PopupErrorGeneral from "../../Popups/ErrorGeneral";
 import { useAuthContext } from "../../context/AuthContext";
+import SelectorGrados from "../SelectorGrados";
+import { useRolContext } from "../../context/RolContext";
+import RegistroAlumno from "../RegistroAlumno";
+import { useUserContext } from "../../context/UserContext";
+import FormularioMatriculaAlumno from "../MatricularUsuario";
 
-const FormularioNuevoAlumno = () => {
+const FormularioNuevoAlumno = ({onBackToListado }) => {
   const { clearAuth } = useAuthContext();
+  const { guardarUsuarioVerificado } = useUserContext();
   const [step, setStep] = useState(1);
   const [isFormValid, setIsFormValid] = useState(false);
   const [tipoDocumento, setTipoDocumento] = useState("");
@@ -23,27 +29,6 @@ const FormularioNuevoAlumno = () => {
     });
   
   const navigate = useNavigate();
-
-  const [formData, setFormData] = useState({
-    nombres: "",
-    apellidoPaterno: "",
-    apellidoMaterno: "",
-    sexo: "",
-    telefono: "",
-    email: "",
-    foto: "",
-    ubigeo: "",
-    direccion: "",
-    fechaNacimiento: "",
-    tipoDoc: "",
-    numeroDocumento: "",
-    seccion: "",
-    grado: "",
-    fechaInicio: "",
-    anioInicio: "",
-    anioAcademico: "",
-    institucion: "",
-  });
   const validateDocument = () => {
     
     const longitudEsperada = tipoDocumento === "DNI" ? 8 : 12;
@@ -55,6 +40,12 @@ const FormularioNuevoAlumno = () => {
 
   const handleClosePopupSucces = () => {
     setShowPopupSucces(false)
+  };
+  const handleSuccess = () => {
+    setStep(1); // Cambia al paso 1
+  };
+  const handleSuccessMatricula = () => {
+    setStep(1); // Cambia al paso 1
   };
   
   const handleClosePopupError = () => {
@@ -86,6 +77,7 @@ const FormularioNuevoAlumno = () => {
       try {
         const response = await verificarUsuarioExite(token, tipoDocumento, numDocumento);
         if (response && response.status === "SUCCESS") {
+          guardarUsuarioVerificado(response.user)
           setModalMessageSucces(response.message);
           setShowPopupSucces(true)
           setTimeout(() => {
@@ -125,50 +117,60 @@ const FormularioNuevoAlumno = () => {
         {step === 1 && (
           <div>
             <h1 className="text-3xl font-bold mb-6 text-blue-600">Paso 1: Verificar Usuario</h1>
-              <form onSubmit={handleSaveDocumento}>
-            <div className="text-left mb-6">
-              <label htmlFor="tipo_doc" className="block text-sm font-medium text-blue-600 mb-2">
-                Tipo de documento
-              </label>
-              <select
-                name="tipo_doc"
-                value={tipoDocumento}
-                onChange={(e) => setTipoDocumento(e.target.value)}
-                required
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
-              >
-                <option value="">Selecciona el tipo de documento</option>
-                <option value="DNI">DNI</option>
-                <option value="Carne de extranjería">Carné de extranjería</option>
-                <option value="Pasaporte">Pasaporte</option>
-              </select>
-            </div>
+            <form onSubmit={handleSaveDocumento}>
+      <div className="text-left mb-6">
+        <label htmlFor="tipo_doc" className="block text-sm font-medium text-blue-600 mb-2">
+          Tipo de documento
+        </label>
+        <select
+          name="tipo_doc"
+          value={tipoDocumento}
+          onChange={(e) => setTipoDocumento(e.target.value)}
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
+        >
+          <option value="">Selecciona el tipo de documento</option>
+          <option value="DNI">DNI</option>
+          <option value="Carne de extranjería">Carné de extranjería</option>
+          <option value="Pasaporte">Pasaporte</option>
+        </select>
+      </div>
 
-            <div className="text-left mb-6">
-              <label htmlFor="num_documento" className="block text-sm font-medium text-blue-600 mb-2">
-                Número de documento
-              </label>
-              <input
-                type="text"
-                name="num_documento"
-                placeholder="Número de documento"
-                value={numDocumento}
-                onChange={(e) => setNumDocumento(e.target.value)}
-                required
-                className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
-              />
-              {errorMessage.documento && (
-                <p className="ml-1 text-red-500 text-sm mt-0 col-start-2">{errorMessage.documento}</p>
-              )}  
-            </div>
+      <div className="text-left mb-6">
+        <label htmlFor="num_documento" className="block text-sm font-medium text-blue-600 mb-2">
+          Número de documento
+        </label>
+        <input
+          type="text"
+          name="num_documento"
+          placeholder="Número de documento"
+          value={numDocumento}
+          onChange={(e) => setNumDocumento(e.target.value)}
+          required
+          className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
+        />
+        {errorMessage.documento && (
+          <p className="ml-1 text-red-500 text-sm mt-0 col-start-2">{errorMessage.documento}</p>
+        )}
+      </div>
 
-            <button
-              type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
-            >
-              Verificar Usuario
-            </button>
-          </form>
+      <div className="flex justify-between">
+        <button
+          type="button"
+          onClick={onBackToListado}
+          className="py-3 px-4 bg-gray-400 text-white font-medium text-lg rounded-lg hover:bg-gray-500 transition duration-300"
+        >
+          Regresar al listado
+        </button>
+        <button
+          type="submit"
+          className="py-3 px-4 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
+        >
+          Verificar Usuario
+        </button>
+      </div>
+    </form>
+          
           {showErrorPopup && (
             <PopupErrorRegister 
               message={modalMessageError} 
@@ -187,11 +189,12 @@ const FormularioNuevoAlumno = () => {
         )}
         {step === 2 && (
           <>
-            <RegistroFormulario
-              titulo="Paso 2: Registrar Usuario"
-              botonTexto="Registrar"
+            <RegistroAlumno
+              botonTexto="Registrar Alumno"
               onFormValidation={handleFormValidation}
+              onSuccess={handleSuccess}
             />
+            
             <div className="flex justify-between mt-4">
             <button
                 type="button"
@@ -213,35 +216,9 @@ const FormularioNuevoAlumno = () => {
         )}
         {step === 3 && (
           <>
-            <h1 className="text-3xl font-bold mb-6 text-blue-600">Paso 3: Información Académica</h1>
-            
-            <form className="space-y-4">
-              <input
-                type="text"
-                name="seccion"
-                placeholder="Sección"
-                value={formData.seccion}
-                // onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-              />
-              <input
-                type="text"
-                name="grado"
-                placeholder="Grado"
-                value={formData.grado}
-                // onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-              />
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  onClick={() => alert("Alumno creado!")}
-                  className="bg-green-500 text-white px-4 py-2 rounded"
-                >
-                  Finalizar
-                </button>
-              </div>
-            </form>
+            <FormularioMatriculaAlumno
+              onSuccess={handleSuccessMatricula}
+            />
           </>
         )}
       </div>

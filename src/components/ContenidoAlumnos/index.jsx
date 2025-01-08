@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FaUserGraduate } from 'react-icons/fa';
+import { FaUserGraduate, FaEdit, FaLock, FaUnlock, FaInfoCircle,FaUsers } from 'react-icons/fa';
 import FormularioNuevoAlumno from '../FormularioNuevoAlumno';
 import { listarAlumnos } from '../../lib/apiListarAlumnos';
 import LoadingSpinner from '../LoadingSpinner';
@@ -9,9 +9,12 @@ import { useAuthContext } from '../../context/AuthContext';
 import { useRolContext } from '../../context/RolContext';
 import e from 'cors';
 import { desactivarAlumno } from '../../lib/apiDesactivarAlumno';
+import PopupConfirmacion from '../../Popups/Confirmacion';
+
 
 const ContenidoAlumnos = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [view, setView] = useState("listado"); 
   const { clearAuth,token } = useAuthContext();
   const [alumnos, setAlumnos] = useState([]);
   const [filteredAlumnos, setFilteredAlumnos] = useState([]); 
@@ -22,6 +25,7 @@ const ContenidoAlumnos = () => {
 
   const [showConfirmacionPopup, setShowConfirmacionPopup] = useState(false);
   const [modalMessageConfirmacion, setModalMessageConfirmar] = useState("");
+  const [tituloModal, setTituloModal] = useState("");
   const [currentAlumnoId, setCurrentAlumnoId] = useState(null);
   
   const [filtroNumeroDocumento, setFiltroNumeroDocumento] = useState("");
@@ -29,7 +33,7 @@ const ContenidoAlumnos = () => {
   const navigate = useNavigate();
 
   //PAGINACION
-  const itemsPerPage = 9; // Elementos por página
+  const itemsPerPage = 11; // Elementos por página
   const [currentPage, setCurrentPage] = useState(1); // Página actual
 
   const [filtroGrado, setFiltroGrado] = useState("");
@@ -39,6 +43,30 @@ const ContenidoAlumnos = () => {
   // Función para manejar el cambio de página
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleBackToListado = () => setView("listado");
+  const handleAddAlumno = () => setView("formulario");
+
+  const handleCancel = () => {
+    // Cierra el popup sin hacer cambios
+    setShowConfirmacionPopup(false);
+  };
+
+  const desactivarHandlerPopup = async (id_alumno) => {
+    // Muestra el popup de confirmación
+    setCurrentAlumnoId(id_alumno);
+    setModalMessageConfirmar('¿Estás seguro de que deseas desactivar a este alumno?');
+    setTituloModal("Desactivar")
+    setShowConfirmacionPopup(true);
+  };
+
+  const activarHandlerPopup = async (id_alumno) => {
+    // Muestra el popup de confirmación
+    setCurrentAlumnoId(id_alumno);
+    setTituloModal("Activar")
+    setModalMessageConfirmar('¿Estás seguro de que deseas activar a este alumno?');
+    setShowConfirmacionPopup(true);
   };
 
 
@@ -51,13 +79,13 @@ const ContenidoAlumnos = () => {
     }
     
   };
-  const desactivarAlumnoHandler = async (id_alumno) => {
-    const response = await desactivarAlumno(token, id_alumno);
+  const desactivarAlumnoHandler = async () => {
+    const response = await desactivarAlumno(token, currentAlumnoId);
   
     if (response.status === "SUCCESS") {
       // Actualiza el estado de los alumnos y los alumnos filtrados
       const updatedAlumnos = alumnos.map((alumno) => {
-        if (alumno.id_alumno === id_alumno) {
+        if (alumno.id_alumno === currentAlumnoId) {
           return { ...alumno, estado_alumno: alumno.estado_alumno === "Activo" ? "Inactivo" : "Activo" };
         }
         return alumno;
@@ -74,6 +102,7 @@ const ContenidoAlumnos = () => {
       setModalMessageError(response.message);
       setShowErrorPopup(true);
     }
+    setShowConfirmacionPopup(false);
   };
   
 
@@ -219,9 +248,9 @@ const ContenidoAlumnos = () => {
 
       <main className="bg-white py-2 px-4 rounded-lg shadow">
         <div className="h-[calc(92vh-160px)] flex flex-col justify-between">
-          {isFormOpen ? (
+          {view === "formulario" ? (
             <div className="overflow-auto mb-0 flex-1">
-              <FormularioNuevoAlumno />
+              <FormularioNuevoAlumno onBackToListado={handleBackToListado} />
             </div>
             
           ) : (
@@ -311,7 +340,7 @@ const ContenidoAlumnos = () => {
                 <div className="mt-6">
                   <button
                     className="bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                    onClick={() => setIsFormOpen(true)}
+                    onClick={handleAddAlumno}
                   >
                     Nuevo Alumno
                   </button>
@@ -327,25 +356,25 @@ const ContenidoAlumnos = () => {
                   <p className="text-center text-gray-500">No existen alumnos para listar.</p>
                 ) : (
                 <>
-                  <table className="w-full text-left border-collapse border border-gray-300">
-                    <thead className="bg-gray-100">
-                      <tr>
-                        <th className="p-3 border-b border-gray-300 text-center">Nombre</th>
-                        <th className="p-3 border-b border-gray-300 text-center">Matrícula</th>
-                        <th className="p-3 border-b border-gray-300 text-center">Grado</th>
-                        <th className="p-3 border-b border-gray-300 text-center">Sección</th>
-                        <th className="p-3 border-b border-gray-300 text-center">N° Documento</th>
-                        <th className="p-3 border-b border-gray-300 text-center">Estado</th>
-                        <th className="p-3 border-b border-gray-300 text-center">Acciones</th>
+                  <table className=" w-full text-left border-collapse border border-gray-300">
+                    <thead className="sticky top-[-1px]  bg-gray-100 shadow-md  ">
+                      <tr className='mt-4'>
+                      <th className="p-3 h-12 border-b border-gray-300 text-center">Nombre</th>
+                      
+                      <th className="p-3 h-12 border-b border-gray-300 text-center">Grado</th>
+                      <th className="p-3 h-12 border-b border-gray-300 text-center">Sección</th>
+                      <th className="p-3 h-12 border-b border-gray-300 text-center">N° Documento</th>
+                      <th className="p-3 h-12 border-b border-gray-300 text-center">Estado</th>
+                      <th className="p-3 h-12 border-b border-gray-300 text-center">Acciones</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className='h-7'>
                       {currentAlumnos.map((alumno) => (
                         <tr key={alumno.id_alumno}>
-                          <td className="p-3 border-b text-center border-gray-300">
+                          <td className="p-3 border-b text-start border-gray-300">
                             {alumno.nombre + " " + alumno.apellido_paterno + " " + alumno.apellido_materno}
                           </td>
-                          <td className="p-3 border-b text-center border-gray-300">{alumno.nombre_matricula}</td>
+                          
                           <td className="p-3 border-b text-center border-gray-300">{alumno.nombre_grado}</td>
                           <td className="p-3 border-b text-center border-gray-300">{alumno.nombre_seccion}</td>
                           <td className="p-3 border-b text-center border-gray-300">{alumno.num_documento}</td>
@@ -354,17 +383,29 @@ const ContenidoAlumnos = () => {
                           </td>
                           <td className="p-2 border-b text-center border-gray-300">
                           <div className="flex space-x-4 justify-center">
-                            <button className="bg-blue-500 text-white px-[27px]  py-2 rounded-lg hover:bg-blue-600">
-                              Editar
+                            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+                            <FaEdit className="h-5 w-5" />
                             </button>
-                            <button 
-                              className={`px-4 py-2 rounded-lg text-white hover:bg-opacity-80 ${alumno.estado_alumno === "Activo" ? "bg-red-500 hover:bg-red-600" :" px-[27px] bg-green-500 hover:bg-green-600 "}`}
-                              onClick={() => desactivarAlumnoHandler(alumno.id_alumno)}
+
+                            {alumno.estado_alumno === "Activo"? (
+                              <button 
+                                className={`px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-red-500 hover:bg-red-600 `}
+                                onClick={() => desactivarHandlerPopup(alumno.id_alumno)}
+                              >
+                                <FaLock className="h-5 w-5" />
+                              </button>
+                            ):(<button 
+                              className={`px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-green-500 hover:bg-green-600 `}
+                              onClick={() => activarHandlerPopup(alumno.id_alumno)}
                             >
-                              {alumno.estado_alumno === "Activo" ? "Desactivar" : "Activar"}
+                              <FaUnlock className="h-5 w-5" />
+                            </button>)}
+                            
+                            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
+                            <FaInfoCircle className="h-5 w-5" />
                             </button>
-                            <button className="bg-yellow-500 text-white px-[27px]  py-2 rounded-lg hover:bg-yellow-600">
-                              Detalle
+                            <button className="bg-violet-500 text-white px-[12px]  py-2 rounded-lg hover:bg-violet-600">
+                            <FaUsers className="h-5 w-5" />
                             </button>
                           </div>
 
@@ -373,9 +414,18 @@ const ContenidoAlumnos = () => {
                         </tr>
                       ))}
                     </tbody>
+                    
                   </table>
                 </>
               )}
+              {showConfirmacionPopup && (
+                      <PopupConfirmacion 
+                        message={modalMessageConfirmacion}
+                        onConfirm={desactivarAlumnoHandler}
+                        onCancel={handleCancel}
+                        titulo={tituloModal}
+                      />
+                    )}
             </div>
 
             {/* Botones de Paginación */}
