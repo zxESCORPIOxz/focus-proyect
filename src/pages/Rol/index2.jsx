@@ -10,14 +10,14 @@ const defaultImage = "https://108.181.169.248/assets/institucion.webp";
 
 const Rol = () => {
   const { token, error, clearAuth } = useAuthContext();
-  const { seleccionarRol, setError } = useRolContext(); // Usamos el contexto aquí
+  const { seleccionarRol, setError,rolSeleccionado,institucionId } = useRolContext(); // Usamos el contexto aquí
   const [loading, setLoading] = useState(true);  
   const [rolesData, setRolesData] = useState([]);
   const navigate = useNavigate();
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [modalMessageError, setModalMessageError] = useState("");
   const [status, setStatus] = useState("");
-
+  
   const handleClosePopupError = () => {
     setShowErrorPopup(false);
     if (status === "LOGOUT" || status === "EMPTY") {
@@ -69,49 +69,54 @@ const Rol = () => {
     <div className="flex flex-col items-center p-4">
       {loading ? (
         <div className="flex justify-center items-center h-96">
-          <LoadingSpinner/>
+          <LoadingSpinner />
         </div>
       ) : error ? (
         <p className="text-lg text-red-500">Error: {error}</p>
       ) : status === "EMPTY" ? (
         <p className="text-lg text-gray-500 mt-4">No hay roles disponibles.</p>
       ) : (
-        Object.keys(groupedEntities).map((role, index) => (
-          <div key={index} className="w-full mt-4">
-            <h2 className="text-2xl font-bold text-blue-600 mb-4 md:text-center">{role}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 justify-center lg:justify-center">
-              {groupedEntities[role].map((entity, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow flex items-center cursor-pointer"
-                  onClick={() => handleRoleClick(role, entity.nombre_ie, entity.id_institucion, entity.matriculas)}
-                >
-                  <div className="mr-4">
-                    <img
-                      src={entity.url_imagen_ie || defaultImage}
-                      alt="Logo Institución"
-                      className="w-16 h-16 object-contain"
-                      onError={(e) => (e.target.src = defaultImage)}
-                    />
+        <div className="max-w-screen-lg w-full px-4 mx-auto">
+          {Object.keys(groupedEntities).map((role, index) => (
+            <div key={index} className="w-full mt-4">
+              <h2 className="text-2xl font-bold text-blue-600 mb-4 text-center">{role}</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
+                {groupedEntities[role].map((entity, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow flex items-center cursor-pointer"
+                    onClick={() =>
+                      handleRoleClick(role, entity.nombre_ie, entity.id_institucion, entity.matriculas)
+                    }
+                  >
+                    <div className="mr-4">
+                      <img
+                        src={entity.url_imagen_ie || defaultImage}
+                        alt="Logo Institución"
+                        className="w-16 h-16 object-contain"
+                        onError={(e) => (e.target.src = defaultImage)}
+                      />
+                    </div>
+                    <div>
+                      <p className="text-xl font-semibold text-blue-500">{entity.nombre_ie}</p>
+                      <p className="text-gray-500 mt-2">Código: {entity.codigo}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-xl font-semibold text-blue-500">{entity.nombre_ie}</p>
-                    <p className="text-gray-500 mt-2">Código: {entity.codigo}</p>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       )}
       {showErrorPopup && (
-        <PopupErrorRegister 
-          message={modalMessageError} 
-          onClose={handleClosePopupError} 
+        <PopupErrorRegister
+          message={modalMessageError}
+          onClose={handleClosePopupError}
         />
       )}
     </div>
   );
+  
 };
 
 export default Rol;

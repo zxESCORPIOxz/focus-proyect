@@ -22,6 +22,7 @@ const FormularioMatriculaAlumno = ({onSuccess}) => {
     const [showPopupSucces, setShowPopupSucces] = useState(false);
     const [status, setStatus] = useState("");
     const usuarioId=usuarioVerificado.id;
+    console.log(institucionId)
     useEffect(() => {
         setFormBody2((prevFormBody) => ({
           ...prevFormBody,
@@ -108,7 +109,7 @@ const FormularioMatriculaAlumno = ({onSuccess}) => {
                     <h2 className="text-2xl font-semibold text-blue-600">Información Académica</h2>
                     <SelectorGrados
                         token={token}
-                        id_institucion={selectedMatriculaId}
+                        id_institucion={institucionId}
                         onSeccionChange={handleSeccionChange}
                     />
                 </div>

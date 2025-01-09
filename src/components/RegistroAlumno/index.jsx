@@ -264,7 +264,7 @@ const RegistroAlumno = ({  botonTexto,onFormValidation,onSuccess  }) => {
         <h2 className="text-2xl font-semibold text-blue-600">Información Académica</h2>
         <SelectorGrados
           token={token}
-          id_institucion={selectedMatriculaId}
+          id_institucion={institucionId}
           onSeccionChange={handleSeccionChange}
         />
       </div>
