@@ -6,11 +6,11 @@ import { listarRoles } from "../../lib/apiListarRoles";
 import PopupErrorRegister from "../../Popups/RegistroError";
 import { useRolContext } from "../../context/RolContext"; // Importamos el contexto
 
-const defaultImage = "https://108.181.169.248/assets/institucion.webp";
+const defaultImage = "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=institucion";
 
 const Rol = () => {
   const { token, error, clearAuth } = useAuthContext();
-  const { seleccionarRol, setError,rolSeleccionado,institucionId } = useRolContext(); // Usamos el contexto aquí
+  const { seleccionarRol, setError,rolSeleccionado,institucionId,institucionSeleccionada } = useRolContext(); // Usamos el contexto aquí
   const [loading, setLoading] = useState(true);  
   const [rolesData, setRolesData] = useState([]);
   const navigate = useNavigate();
@@ -25,6 +25,7 @@ const Rol = () => {
       navigate("/login"); 
     }
   };
+  
 
   useEffect(() => {
     const fetchRoles = async () => {

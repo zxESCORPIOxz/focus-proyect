@@ -4,7 +4,7 @@ import PopupErrorRegister from '../../Popups/RegistroError';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 
-const SelectorGrados = ({ token, id_institucion,onSeccionChange  }) => {
+const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccionado }) => {
   const [niveles, setNiveles] = useState([]);
   const [grados, setGrados] = useState([]);
   const [secciones, setSecciones] = useState([]);
@@ -13,44 +13,44 @@ const SelectorGrados = ({ token, id_institucion,onSeccionChange  }) => {
   const [seccionSeleccionada, setSeccionSeleccionada] = useState('');
 
   const [showErrorPopup, setShowErrorPopup] = useState(false);
-  const [modalMessageError, setModalMessageError] = useState("");
-  const [status, setStatus] = useState("");
+  const [modalMessageError, setModalMessageError] = useState('');
+  const [status, setStatus] = useState('');
   const navigate = useNavigate();
   const { clearAuth } = useAuthContext();
 
   const handleClosePopupError = () => {
     setShowErrorPopup(false);
-    if (status === "LOGOUT") {
-      clearAuth(); // Limpia cualquier dato relacionado con la autenticación
-      navigate("/login"); // Redirigir al login
+    if (status === 'LOGOUT') {
+      clearAuth();
+      navigate('/login');
     }
-    
   };
+
   const handleSeccionChange = (e) => {
     const selectedIdSeccion = e.target.value;
-    setSeccionSeleccionada(selectedIdSeccion);
-    if (onSeccionChange) {
-      onSeccionChange(selectedIdSeccion); // Llama a la función pasada desde el padre
+    if (selectedIdSeccion !== seccionSeleccionada) {
+      setSeccionSeleccionada(selectedIdSeccion);
+      if (onSeccionChange) {
+        onSeccionChange(selectedIdSeccion);
+      }
     }
   };
 
+  // Obtener grados y niveles al cargar el componente
   useEffect(() => {
-    // Llamar a la API para obtener los datos de niveles
     const fetchGrados = async () => {
       const data = await listarGrados(token, id_institucion);
-        if (data.status === 'SUCCESS') {
-            setNiveles(data.niveles);
-             // Se asume que "grados" contiene los niveles
-        }else if (data.status === "LOGOUT") {
-            setStatus("LOGOUT");
-            setModalMessageError(data.message); // Configura el mensaje de error
-            setShowErrorPopup(true);
-        }else{
-            setModalMessageError(data.message);
-            setShowErrorPopup(true);
-        }
+      if (data.status === 'SUCCESS') {
+        setNiveles(data.niveles);
+      } else if (data.status === 'LOGOUT') {
+        setStatus('LOGOUT');
+        setModalMessageError(data.message);
+        setShowErrorPopup(true);
+      } else {
+        setModalMessageError(data.message);
+        setShowErrorPopup(true);
+      }
     };
-
     fetchGrados();
   }, [token, id_institucion]);
 
@@ -58,9 +58,11 @@ const SelectorGrados = ({ token, id_institucion,onSeccionChange  }) => {
   useEffect(() => {
     if (nivelSeleccionado) {
       const selectedNivel = niveles.find(nivel => nivel.id_nivel === parseInt(nivelSeleccionado));
-      setGrados(selectedNivel ? selectedNivel.grados : []);
-      setGradoSeleccionado('');
-      setSecciones([]); // Limpiar secciones
+      if (selectedNivel) {
+        setGrados(selectedNivel.grados);
+        setGradoSeleccionado('');
+        setSecciones([]);
+      }
     }
   }, [nivelSeleccionado, niveles]);
 
@@ -68,18 +70,50 @@ const SelectorGrados = ({ token, id_institucion,onSeccionChange  }) => {
   useEffect(() => {
     if (gradoSeleccionado) {
       const selectedGrado = grados.find(grado => grado.id_grado === parseInt(gradoSeleccionado));
-      setSecciones(selectedGrado ? selectedGrado.secciones : []);
-      setSeccionSeleccionada('');
+      if (selectedGrado) {
+        setSecciones(selectedGrado.secciones);
+        setSeccionSeleccionada('');
+      }
     }
   }, [gradoSeleccionado, grados]);
 
+  // Preseleccionar nivel, grado y sección según el alumno seleccionado
+  useEffect(() => {
+    if (alumnoSeleccionado && niveles.length > 0) {
+      const { id_nivel, id_grado, id_seccion } = alumnoSeleccionado;
+
+      setNivelSeleccionado(id_nivel || '');
+
+      // Preseleccionar grado y sección solo si el nivel está disponible
+      const selectedNivel = niveles.find((nivel) => nivel.id_nivel === id_nivel);
+      if (selectedNivel) {
+        setGrados(selectedNivel.grados || []);
+        const selectedGrado = selectedNivel.grados.find((grado) => grado.id_grado === id_grado);
+        if (selectedGrado) {
+          setGradoSeleccionado(id_grado || '');
+          setSecciones(selectedGrado.secciones || []);
+          
+          // Preseleccionar la sección si existe
+          const selectedSeccion = selectedGrado.secciones.find(seccion => seccion.id_seccion === id_seccion);
+          if (selectedSeccion) {
+            setSeccionSeleccionada(id_seccion || '');
+          }
+        }
+      }
+    }
+  }, [alumnoSeleccionado, niveles]);
+
+  // Preseleccionar las opciones solo si no hay selección previa
+  useEffect(() => {
+    if (nivelSeleccionado && gradoSeleccionado && seccionSeleccionada) {
+      setSeccionSeleccionada(seccionSeleccionada);
+    }
+  }, [nivelSeleccionado, gradoSeleccionado]);
+
   return (
     <div className="space-y-4">
-      <div className="flex space-x-4"> {/* Flexbox para alinear horizontalmente */}
-        
-        {/* Sección de Nivel */}
+      <div className="flex space-x-4">
         <div className="flex-1">
-          {/* <label className="block font-semibold">Nivel</label> */}
           <select
             value={nivelSeleccionado}
             onChange={(e) => setNivelSeleccionado(e.target.value)}
@@ -93,10 +127,8 @@ const SelectorGrados = ({ token, id_institucion,onSeccionChange  }) => {
             ))}
           </select>
         </div>
-  
-        {/* Sección de Grado */}
+
         <div className="flex-1">
-          {/* <label className="block font-semibold">Grado</label> */}
           <select
             value={gradoSeleccionado}
             onChange={(e) => setGradoSeleccionado(e.target.value)}
@@ -111,10 +143,8 @@ const SelectorGrados = ({ token, id_institucion,onSeccionChange  }) => {
             ))}
           </select>
         </div>
-  
-        {/* Sección de Sección */}
+
         <div className="flex-1">
-          {/* <label className="block font-semibold">Sección</label> */}
           <select
             value={seccionSeleccionada}
             onChange={handleSeccionChange}
@@ -129,18 +159,16 @@ const SelectorGrados = ({ token, id_institucion,onSeccionChange  }) => {
             ))}
           </select>
         </div>
-  
       </div>
-  
-      {/* Mostrar popup de error */}
+
       {showErrorPopup && (
-        <PopupErrorRegister 
-          message={modalMessageError} 
-          onClose={handleClosePopupError} 
+        <PopupErrorRegister
+          message={modalMessageError}
+          onClose={handleClosePopupError}
         />
       )}
     </div>
   );
-  
 };
+
 export default SelectorGrados;

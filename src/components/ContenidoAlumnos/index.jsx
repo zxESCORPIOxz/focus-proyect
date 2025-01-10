@@ -11,11 +11,16 @@ import e from 'cors';
 import { desactivarAlumno } from '../../lib/apiDesactivarAlumno';
 import PopupConfirmacion from '../../Popups/Confirmacion';
 
+import { Tooltip } from 'react-tooltip';
+import { useAlumnoContext } from '../../context/AlumnoContext';
+import EditarAlumno from '../EditarAlumno';
+import DetalleAlumno from '../DetalleAlumno';
 
 const ContenidoAlumnos = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [view, setView] = useState("listado"); 
   const { clearAuth,token } = useAuthContext();
+  const [isFormValid, setIsFormValid] = useState(false);
   const [alumnos, setAlumnos] = useState([]);
   const [filteredAlumnos, setFilteredAlumnos] = useState([]); 
   const [loading, setLoading] = useState(true);  
@@ -40,13 +45,20 @@ const ContenidoAlumnos = () => {
   const [filtroSeccion, setFiltroSeccion] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
 
+  const [selectedAlumno, setSelectedAlumno] = useState([]);
+  const [selectedApoderado, setSelectedApoderado] = useState(null);
+
+  const { guardarAlumnoSeleccionado,alumnoSeleccionado } = useAlumnoContext();
+
   // Función para manejar el cambio de página
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  const handleBackToListado = () => setView("listado");
-  const handleAddAlumno = () => setView("formulario");
+ 
+
+  
+
 
   const handleCancel = () => {
     // Cierra el popup sin hacer cambios
@@ -113,7 +125,7 @@ const ContenidoAlumnos = () => {
       setLoading(true);
   
       const response = await listarAlumnos(token, institucionId, selectedMatriculaId);
-  
+      
       if (response.status === "SUCCESS") {
         setAlumnos(response.alumnos); 
         setFilteredAlumnos(response.alumnos);
@@ -239,6 +251,33 @@ const ContenidoAlumnos = () => {
 
   const totalPages = Math.ceil(filteredAlumnos.length / itemsPerPage);
 
+
+  const handleBackToListado = () => {
+    guardarAlumnoSeleccionado(""); 
+    setView("listado")           
+                                                                                                 
+  };
+  const handleAddAlumno = () => setView("formulario");
+
+  
+  const handleDetalleAlumno = (alumnoSeleccionado) => {
+    guardarAlumnoSeleccionado(alumnoSeleccionado); 
+    setView("detalle")           
+                                                                                                 
+  };
+
+  const handleEditarAlumno = (alumnoSeleccionado) => {
+    guardarAlumnoSeleccionado(alumnoSeleccionado); 
+    setView("editar")                                                                                                         
+  };
+
+  const handleFormValidation = (isValid) => {
+    setIsFormValid(isValid);
+  };
+  const handleSuccess = () => {
+    console.log("Usuario editado")
+  };
+
   return (
     <div className="flex-1 p-6">
       <header className="bg-[#4B7DBF] text-white rounded-lg flex items-center gap-4 p-4 mb-6">
@@ -251,6 +290,17 @@ const ContenidoAlumnos = () => {
           {view === "formulario" ? (
             <div className="overflow-auto mb-0 flex-1">
               <FormularioNuevoAlumno onBackToListado={handleBackToListado} />
+            </div>
+          ) : view === "editar" ? (
+            <div className="overflow-auto mb-0 flex-1">
+              <EditarAlumno
+              onBackToListado={handleBackToListado}               
+              onFormValidation={handleFormValidation}
+              onSuccess={handleSuccess}/>
+            </div>
+          ) : view === "detalle" ? (
+            <div className="overflow-auto mb-0 flex-1">
+              <DetalleAlumno onBackToListado={handleBackToListado}/>
             </div>
             
           ) : (
@@ -383,31 +433,69 @@ const ContenidoAlumnos = () => {
                           </td>
                           <td className="p-2 border-b text-center border-gray-300">
                           <div className="flex space-x-4 justify-center">
-                            <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
-                            <FaEdit className="h-5 w-5" />
-                            </button>
+                              {/* Botón Editar Alumno */}
+                              <div className="relative group">
+                                <button
+                                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                                  onClick={() => {
+                                    handleEditarAlumno(alumno)
+                                  }}
+                                >
+                                  <FaEdit className="h-5 w-5" />
+                                </button>
+                                <span className="absolute -top-5 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  Editar
+                                </span>
+                              </div>
 
-                            {alumno.estado_alumno === "Activo"? (
-                              <button 
-                                className={`px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-red-500 hover:bg-red-600 `}
-                                onClick={() => desactivarHandlerPopup(alumno.id_alumno)}
-                              >
-                                <FaLock className="h-5 w-5" />
-                              </button>
-                            ):(<button 
-                              className={`px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-green-500 hover:bg-green-600 `}
-                              onClick={() => activarHandlerPopup(alumno.id_alumno)}
-                            >
-                              <FaUnlock className="h-5 w-5" />
-                            </button>)}
-                            
-                            <button className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600">
-                            <FaInfoCircle className="h-5 w-5" />
-                            </button>
-                            <button className="bg-violet-500 text-white px-[12px]  py-2 rounded-lg hover:bg-violet-600">
-                            <FaUsers className="h-5 w-5" />
-                            </button>
-                          </div>
+                              {/* Botón Activar/Desactivar Alumno */}
+                              <div className="relative group">
+                                {alumno.estado_alumno === "Activo" ? (
+                                  <button
+                                    className="px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-red-500 hover:bg-red-600"
+                                    onClick={() => desactivarHandlerPopup(alumno.id_alumno)}
+                                  >
+                                    <FaLock className="h-5 w-5" />
+                                  </button>
+                                ) : (
+                                  <button
+                                    className="px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-green-500 hover:bg-green-600"
+                                    onClick={() => activarHandlerPopup(alumno.id_alumno)}
+                                  >
+                                    <FaUnlock className="h-5 w-5" />
+                                  </button>
+                                )}
+                                <span className="absolute -top-5 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  {alumno.estado_alumno === "Activo" ? "Desactivar" : "Activar"}
+                                </span>
+                              </div>
+
+                              {/* Botón Detalle Alumno */}
+                              <div className="relative group">
+                                <button
+                                  className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                                  onClick={() => {
+                                    handleDetalleAlumno(alumno)
+                                  }}
+                                >
+                                  <FaInfoCircle className="h-5 w-5" />
+                                </button>
+                                <span className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  Ver Detalles
+                                </span>
+                              </div>
+
+                              {/* Botón Grupos */}
+                              <div className="relative group">
+                                <button className="bg-violet-500 text-white px-[12px] py-2 rounded-lg hover:bg-violet-600">
+                                  <FaUsers className="h-5 w-5" />
+                                </button>
+                                <span className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  Asignar Apoderado
+                                </span>
+                              </div>
+                            </div>
+
 
 
                           </td>

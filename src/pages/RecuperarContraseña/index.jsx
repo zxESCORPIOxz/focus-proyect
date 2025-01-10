@@ -123,7 +123,7 @@ const RecuperarContraseña = () => {
           <div className="relative bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] rounded-lg shadow-lg p-6 flex items-center justify-center text-white">
             <div className="relative z-10 text-center">
               <img 
-                src="https://108.181.169.248/assets/icon_focusclass.png" 
+                src="https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=icon_focusclass" 
                 alt="Icono FocusClass" 
                 className="mx-auto w-20 h-20 object-contain mb-3"
               />

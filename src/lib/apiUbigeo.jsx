@@ -43,3 +43,18 @@ export const fetchDistritos = async (provinciaId) => {
     throw error;
   }
 };
+
+export const fetchUbigeoGeneral = async (ubicacionId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}`,{
+      params: { 
+        ruta: "ubicacion" ,
+        ubigeo: ubicacionId  
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener la ubicacion:", error);
+    throw error;
+  }
+};

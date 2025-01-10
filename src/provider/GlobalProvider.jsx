@@ -6,6 +6,7 @@ import { AuthProvider } from "../context/AuthContext";
 import { RegisterProvider } from "../context/RegisterContext";
 import { RolProvider } from "../context/RolContext";
 import { UserProvider } from "../context/UserContext";
+import { AlumnoProvider } from "../context/AlumnoContext";
 
 const GlobalProvider = ({ children }) => {
 
@@ -17,7 +18,9 @@ const GlobalProvider = ({ children }) => {
           <RegisterProvider>
             <RolProvider>
               <UserProvider>
-                {children}
+                <AlumnoProvider>
+                  {children}
+                </AlumnoProvider>
               </UserProvider>              
             </RolProvider>
           </RegisterProvider>

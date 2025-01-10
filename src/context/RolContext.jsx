@@ -28,9 +28,11 @@ export const RolProvider = ({ children }) => {
     setInstitucionSeleccionada(null);
     setInstitucionId(null);
     setMatriculas([]);
+    setNombreMatricula(null)
   };
   const seleccionarMatricula = (matriculaId) => {
     setSelectedMatriculaId(matriculaId);
+    
 };
 
   return (
