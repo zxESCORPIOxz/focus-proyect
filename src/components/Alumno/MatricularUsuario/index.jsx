@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useRolContext } from '../../context/RolContext';
+import { useRolContext } from '../../../context/RolContext';
 import { useNavigate } from 'react-router-dom';
-import { useUserContext } from '../../context/UserContext';
-import SelectorGrados from '../SelectorGrados';
-import { registrarAlumno } from '../../lib/apiRegistrarAlumno';
-import PopupErrorRegister from '../../Popups/RegistroError';
-import PopupSuccesGeneral from '../../Popups/SuccesGeneral';
-import { useAuthContext } from '../../context/AuthContext';
+import { useUserContext } from '../../../context/UserContext';
+import SelectorGrados from '../../SelectorGrados';
+import { registrarAlumno } from '../../../lib/apiRegistrarAlumno';
+import PopupErrorRegister from '../../../Popups/RegistroError';
+import PopupSuccesGeneral from '../../../Popups/SuccesGeneral';
+import { useAuthContext } from '../../../context/AuthContext';
 
 const FormularioMatriculaAlumno = ({onSuccess}) => {
 

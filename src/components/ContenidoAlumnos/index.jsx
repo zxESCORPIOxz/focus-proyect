@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FaUserGraduate, FaEdit, FaLock, FaUnlock, FaInfoCircle,FaUsers } from 'react-icons/fa';
-import FormularioNuevoAlumno from '../FormularioNuevoAlumno';
+import FormularioNuevoAlumno from '../Alumno/FormularioNuevoAlumno';
 import { listarAlumnos } from '../../lib/apiListarAlumnos';
 import LoadingSpinner from '../LoadingSpinner';
 import PopupErrorRegister from '../../Popups/RegistroError';
@@ -13,8 +13,8 @@ import PopupConfirmacion from '../../Popups/Confirmacion';
 
 import { Tooltip } from 'react-tooltip';
 import { useAlumnoContext } from '../../context/AlumnoContext';
-import EditarAlumno from '../EditarAlumno';
-import DetalleAlumno from '../DetalleAlumno';
+import EditarAlumno from '../Alumno/EditarAlumno';
+import DetalleAlumno from '../Alumno/DetalleAlumno';
 
 const ContenidoAlumnos = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);

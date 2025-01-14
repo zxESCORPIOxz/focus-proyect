@@ -1,18 +1,18 @@
 import React, { useContext, useState } from "react";
-import RegistroFormulario from "../FormularioUsuario";
-import { verificarUsuarioExite } from "../../lib/apiVerificarUsuario";
-import PopupErrorRegister from "../../Popups/RegistroError";
-import PopupSuccesGeneral from "../../Popups/SuccesGeneral";
+import RegistroFormulario from "../../FormularioUsuario";
+import { verificarUsuarioExite } from "../../../lib/apiVerificarUsuario";
+import PopupErrorRegister from "../../../Popups/RegistroError";
+import PopupSuccesGeneral from "../../../Popups/SuccesGeneral";
 import { useNavigate } from "react-router-dom";
-import PopupErrorGeneral from "../../Popups/ErrorGeneral";
-import { useAuthContext } from "../../context/AuthContext";
-import SelectorGrados from "../SelectorGrados";
-import { useRolContext } from "../../context/RolContext";
-import RegistroAlumno from "../RegistroAlumno";
-import { useUserContext } from "../../context/UserContext";
-import FormularioMatriculaAlumno from "../MatricularUsuario";
+import PopupErrorGeneral from "../../../Popups/ErrorGeneral";
+import { useAuthContext } from "../../../context/AuthContext";
+import SelectorGrados from "../../SelectorGrados";
+import { useRolContext } from "../../../context/RolContext";
 
-const FormularioNuevoAlumno = ({onBackToListado }) => {
+import { useUserContext } from "../../../context/UserContext";
+
+
+const FormularioNuevoDocente = ({onBackToListado }) => {
   const { clearAuth } = useAuthContext();
   const { guardarUsuarioVerificado } = useUserContext();
   const [step, setStep] = useState(1);
@@ -114,7 +114,7 @@ const FormularioNuevoAlumno = ({onBackToListado }) => {
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center ">
       <div className="bg-white p-6 rounded-lg w-[800px] shadow-lg">
-        {step === 1 && (
+      {step === 1 && (
           <div>
             <h1 className="text-3xl font-bold mb-6 text-blue-600">Paso 1: Verificar Usuario</h1>
             <form onSubmit={handleSaveDocumento}>
@@ -214,16 +214,9 @@ const FormularioNuevoAlumno = ({onBackToListado }) => {
             </div>
           </>
         )}
-        {step === 3 && (
-          <>
-            <FormularioMatriculaAlumno
-              onSuccess={handleSuccessMatricula}
-            />
-          </>
-        )}
       </div>
     </div>
   );
 };
 
-export default FormularioNuevoAlumno;
+export default FormularioNuevoDocente;

@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchDepartamentos, fetchDistritos, fetchProvincias, fetchUbigeoGeneral } from "../../lib/apiUbigeo";
-import PopupErrorRegister from "../../Popups/RegistroError";
-import SelectorGrados from "../SelectorGrados";
-import { useRolContext } from "../../context/RolContext";
-import { registrarAlumno } from "../../lib/apiRegistrarAlumno";
-import PopupSuccesGeneral from "../../Popups/SuccesGeneral";
-import { useAlumnoContext } from "../../context/AlumnoContext";
-import { editarAlumno } from "../../lib/apiEditarAlumno";
+import { fetchDepartamentos, fetchDistritos, fetchProvincias } from "../../../lib/apiUbigeo";
+import PopupErrorRegister from "../../../Popups/RegistroError";
+import SelectorGrados from "../../SelectorGrados";
+import { useRolContext } from "../../../context/RolContext";
+import { registrarAlumno } from "../../../lib/apiRegistrarAlumno";
+import PopupSuccesGeneral from "../../../Popups/SuccesGeneral";
 
-const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
+const RegistroAlumno = ({  botonTexto,onFormValidation,onSuccess  }) => {
   
   const {selectedMatriculaId,institucionId } = useRolContext();
-  const {alumnoSeleccionado}=useAlumnoContext();
   const token = localStorage.getItem("token")
   const navigate = useNavigate();
   const [showErrorPopup, setShowErrorPopup] = useState(false);
@@ -34,49 +31,49 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
     provincia: "",
     distrito: "",
   });
-  
-  const [departamento, setDepartamento] = useState("");
-  const [provincia, setProvincia] = useState("");
-  const [distrito, setDistrito] = useState("");
 
   const [formBody1 , setFormBody1]  = useState({
-    token: token,
-    id_usuario:alumnoSeleccionado.id_usuario,
-    nombre: alumnoSeleccionado.nombre,
-    apellido_paterno: alumnoSeleccionado.apellido_paterno,
-    apellido_materno: alumnoSeleccionado.apellido_materno,
-    sexo: alumnoSeleccionado.sexo,
-    email: alumnoSeleccionado.email,
-    url_imagen:alumnoSeleccionado.url_imagen,
-    telefono: alumnoSeleccionado.telefono,
-    ubigeo: alumnoSeleccionado.ubigeo,
-    direccion: alumnoSeleccionado.direccion,
-    fecha_nacimiento: alumnoSeleccionado.fecha_nacimiento,
-    tipo_doc: alumnoSeleccionado.tipo_doc,
-    num_documento: alumnoSeleccionado.num_documento,
-    id_institucion: institucionId,
-    id_matricula: selectedMatriculaId,
-    id_seccion: alumnoSeleccionado.id_seccion,
+    token: "",
+    nombre: "",
+    apellido_paterno: "",
+    apellido_materno: "",
+    sexo: "",
+    email: "",
+    telefono: "",
+    ubigeo: "",
+    direccion: "",
+    fecha_nacimiento: "",
+    tipo_doc: "",
+    num_documento: "",
+    id_institucion: "",
+    id_matricula: "",
+    id_seccion: "",
     img_b64: "",  
   });
   console.log(formBody1)
-  const [grados, setGrados] = useState({
-    id_nivel:alumnoSeleccionado.id_nivel, 
-    id_grado:alumnoSeleccionado.id_grado,
-    id_seccion:alumnoSeleccionado.id_seccion,
-
- 
-  });
-
   
-
-
+  
+  useEffect(() => {
+    setFormBody1((prevFormBody) => ({
+      ...prevFormBody,
+      id_institucion: institucionId,
+    }));
+    setFormBody1((prevFormBody) => ({
+      ...prevFormBody,
+      token: token,
+    }));
+    setFormBody1((prevFormBody) => ({
+      ...prevFormBody,
+      id_matricula: selectedMatriculaId,
+    }));
+  }, [institucionId,token,selectedMatriculaId]);
 
   const handleSeccionChange = (idSeccion) => {
     setFormBody1((prevFormBody) => ({
       ...prevFormBody,
       id_seccion: idSeccion, 
     }));
+    
   };
   
 
@@ -192,7 +189,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
 
     if (validateForm()) {
       try {
-        const response = await editarAlumno(formBody1);
+        const response = await registrarAlumno(formBody1);
         if (response && response.status === "SUCCESS") {
           onFormValidation(true);
           setShowPopupSucces(true);
@@ -223,7 +220,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
   useEffect(() => {
     const loadDepartamentos = async () => {
       try {
-        const data = await fetchDepartamentos();
+        const data = await fetch();
         setUbigeo((prevState) => ({ ...prevState, departamentos: data }));
       } catch (error) {
         console.error("Error al cargar departamentos:", error);
@@ -260,40 +257,19 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
     loadDistritos();
   }, [ubigeo.provincia]);
 
-  useEffect(() => {
-    const obtenerUbigeoGeneral = async () => {
-      try {
-        const data = await fetchUbigeoGeneral(alumnoSeleccionado.ubigeo);
-        setDepartamento(data.departamento);
-        setProvincia(data.provincia);
-        setDistrito(data.distrito);
-        setUbigeo((prevState) => ({ ...prevState, departamento: data.departamento }));
-      } catch (error) {
-        console.error("Error al obtener datos de ubigeo general:", error);
-      }
-    };
-
-    if (ubigeo) {
-      obtenerUbigeoGeneral();
-    }
-  }, [alumnoSeleccionado.ubigeo]);
-  console.log(ubigeo.departamento)
-
   return (
     <>
       <div className="bg-white rounded-lg shadow-lg p-10 w-full max-w-lg md:max-w-5xl">
-        <h1 className="text-3xl font-bold mb-6 text-blue-600">Editar Alumno</h1>
+        <h1 className="text-3xl font-bold mb-6 text-blue-600">Paso 2: Registrar Alumno</h1>
         {/* Sección de SelectorGrados */}
-        <div className="space-y-4 mb-3">
-            <h2 className="text-2xl font-semibold text-blue-600">Información Académica</h2>
-            <SelectorGrados
-            token={token}
-            id_institucion={institucionId}
-            onSeccionChange={handleSeccionChange}
-            alumnoSeleccionado={grados}
-            />
-        </div>
-      
+      <div className="space-y-4 mb-3">
+        <h2 className="text-2xl font-semibold text-blue-600">Información Académica</h2>
+        <SelectorGrados
+          token={token}
+          id_institucion={institucionId}
+          onSeccionChange={handleSeccionChange}
+        />
+      </div>
         {/* Sección de Datos Personales */}
       <div className="space-y-4 mb-8">
         <h2 className="text-2xl font-semibold text-blue-600">Datos Personales</h2>
@@ -301,7 +277,6 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-3">
             <input
               type="text"
-              
               name="nombre"
               placeholder="Nombre"
               value={formBody1.nombre}
@@ -375,7 +350,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
             onChange={handleInputChangeUbigeo}
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
           >
-            <option value={departamento}>{departamento}</option>
+            <option value="">Seleccione un departamento</option>
             {ubigeo.departamentos.map((dep) => (
               <option key={dep.id} value={dep.id}>{dep.nombre}</option>
             ))}
@@ -386,9 +361,9 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
             value={ubigeo.provincia}
             onChange={handleInputChangeUbigeo}
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
-            disabled={!ubigeo.departamentos}
+            disabled={!ubigeo.departamento}
           >
-            <option value={provincia}>{provincia}</option>
+            <option value="">Seleccione una provincia</option>
             {ubigeo.provincias.map((prov) => (
               <option key={prov.id} value={prov.id}>{prov.nombre}</option>
             ))}
@@ -399,9 +374,9 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
             value={ubigeo.distrito}
             onChange={handleInputChangeUbigeo}
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
-            disabled={!ubigeo.provincias}
+            disabled={!ubigeo.provincia}
           >
-            <option value={distrito}>{distrito}</option>
+            <option value="">Seleccione un distrito</option>
             {ubigeo.distritos.map((dist) => (
               <option key={dist.id} value={dist.id}>{dist.nombre}</option>
             ))}
@@ -488,22 +463,13 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
             )}
 
           {errorMessage.imagen && <p className="text-red-500 text-sm">{errorMessage.imagen}</p>}
-          <div className="flex justify-between">
-            <button
-              type="button"
-              onClick={onBackToListado}
-              className="py-3 px-10 bg-gray-400 text-white font-medium text-lg rounded-lg hover:bg-gray-500 transition duration-300"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              className="py-3 px-6 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
-            >
-              Editar Alumno
-            </button>
-          </div>
           
+          <button
+        type="submit"
+        className="w-full mt-5 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-indigo-500 transition duration-300"
+      >
+        {botonTexto}
+      </button>
          
         </form>
       </div>
@@ -534,4 +500,4 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
   );
 };
 
-export default EditarAlumno;
+export default RegistroAlumno;

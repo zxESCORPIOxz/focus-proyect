@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { fetchDepartamentos, fetchDistritos, fetchProvincias, fetchUbigeoGeneral } from "../../lib/apiUbigeo";
-import PopupErrorRegister from "../../Popups/RegistroError";
-import SelectorGrados from "../SelectorGrados";
-import { useRolContext } from "../../context/RolContext";
-import { registrarAlumno } from "../../lib/apiRegistrarAlumno";
-import PopupSuccesGeneral from "../../Popups/SuccesGeneral";
-import { useAlumnoContext } from "../../context/AlumnoContext";
+import { fetchDepartamentos, fetchDistritos, fetchProvincias, fetchUbigeoGeneral } from "../../../lib/apiUbigeo";
+import PopupErrorRegister from "../../../Popups/RegistroError";
+import SelectorGrados from "../../SelectorGrados";
+import { useRolContext } from "../../../context/RolContext";
+import { registrarAlumno } from "../../../lib/apiRegistrarAlumno";
+import PopupSuccesGeneral from "../../../Popups/SuccesGeneral";
+import { useAlumnoContext } from "../../../context/AlumnoContext";
 
 
 const DetalleAlumno = ({onBackToListado }) => {
@@ -68,6 +68,7 @@ const DetalleAlumno = ({onBackToListado }) => {
     id_seccion: alumnoSeleccionado.id_seccion,
     img_b64: "",  
   });
+  console.log(formBody1)
 
   const [grados, setGrados] = useState({
     id_nivel:alumnoSeleccionado.id_nivel, 
@@ -90,9 +91,12 @@ const DetalleAlumno = ({onBackToListado }) => {
     const obtenerUbigeoGeneral = async () => {
       try {
         const data = await fetchUbigeoGeneral(alumnoSeleccionado.ubigeo);
-        setDepartamento(data.departamento);
-        setProvincia(data.provincia);
-        setDistrito(data.distrito);
+        const departamento= data.departamento
+        const provincia= data.provincia
+        const distrito= data.distrito
+        setDepartamento(departamento.nombre);
+        setProvincia(provincia.nombre);
+        setDistrito(distrito.nombre);
       } catch (error) {
         console.error("Error al obtener datos de ubigeo general:", error);
       }

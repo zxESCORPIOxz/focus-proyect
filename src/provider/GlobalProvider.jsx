@@ -7,6 +7,7 @@ import { RegisterProvider } from "../context/RegisterContext";
 import { RolProvider } from "../context/RolContext";
 import { UserProvider } from "../context/UserContext";
 import { AlumnoProvider } from "../context/AlumnoContext";
+import { DocenteProvider } from "../context/DocenteContext";
 
 const GlobalProvider = ({ children }) => {
 
@@ -19,7 +20,9 @@ const GlobalProvider = ({ children }) => {
             <RolProvider>
               <UserProvider>
                 <AlumnoProvider>
+                  <DocenteProvider>
                   {children}
+                  </DocenteProvider>
                 </AlumnoProvider>
               </UserProvider>              
             </RolProvider>
