@@ -38,7 +38,7 @@ const ContenidoAlumnos = () => {
   const navigate = useNavigate();
 
   //PAGINACION
-  const itemsPerPage = 11; // Elementos por página
+  const itemsPerPage = 10; // Elementos por página
   const [currentPage, setCurrentPage] = useState(1); // Página actual
 
   const [filtroGrado, setFiltroGrado] = useState("");
@@ -119,36 +119,42 @@ const ContenidoAlumnos = () => {
   
 
 
-  useEffect(() => {
-    const fetchAlumnos = async () => {
-    
-      setLoading(true);
+  const fetchAlumnos = async () => {
+    setLoading(true); // Muestra el indicador de carga
   
-      const response = await listarAlumnos(token, institucionId, selectedMatriculaId);
-      
+    try {
+      const response = await listarAlumnos(token, institucionId, selectedMatriculaId); // Llama a la API
+  
       if (response.status === "SUCCESS") {
         setAlumnos(response.alumnos); 
-        setFilteredAlumnos(response.alumnos);
+        setFilteredAlumnos(response.alumnos); // Filtra los alumnos en base a los datos obtenidos
       } else if (response.status === "LOGOUT") {
         setStatus("LOGOUT");
         setModalMessageError(response.message); // Configura el mensaje de error
         setShowErrorPopup(true); // Muestra el popup de error
       } else if (response.status === "FAILED") {
         setModalMessageError(response.message);
-        setAlumnos([]); 
-        setShowErrorPopup(true);
+        setAlumnos([]);
         setFilteredAlumnos([]);
+        setShowErrorPopup(true); // Muestra el popup de error
       }
-  
-      setLoading(false);
-    };
-  
+    } catch (error) {
+      console.error("Error al listar alumnos:", error);
+      setModalMessageError("Ocurrió un error inesperado."); // Mensaje genérico de error
+      setAlumnos([]);
+      setFilteredAlumnos([]);
+      setShowErrorPopup(true);
+    } finally {
+      setLoading(false); // Oculta el indicador de carga
+    }
+  };
+  useEffect(() => {
     if (selectedMatriculaId) {
-    fetchAlumnos();
-  } else {
-    setAlumnos([]); 
-    setFilteredAlumnos([]);
-  }
+      fetchAlumnos(); // Obtén los alumnos si hay un `selectedMatriculaId`
+    } else {
+      setAlumnos([]); 
+      setFilteredAlumnos([]); // Limpia los alumnos si no hay `selectedMatriculaId`
+    }
   }, [token, institucionId, selectedMatriculaId]);
 
   // Aplicar filtros
@@ -275,7 +281,9 @@ const ContenidoAlumnos = () => {
     setIsFormValid(isValid);
   };
   const handleSuccess = () => {
-    console.log("Usuario editado")
+    guardarAlumnoSeleccionado(""); 
+    fetchAlumnos();
+    setView("listado") 
   };
 
   return (
@@ -399,15 +407,19 @@ const ContenidoAlumnos = () => {
 
               <div className="flex-1 overflow-auto mb-0">
               {loading ? (
-                <div className="overflow-auto mb-0 flex-1">
+                <div className="overflow-auto mb-0 flex-1 relative">
+                  
                   <LoadingSpinner />
+                
                 </div>
+              
+              
                 ) : currentAlumnos.length === 0 ? (
                   <p className="text-center text-gray-500">No existen alumnos para listar.</p>
                 ) : (
                 <>
                   <table className=" w-full text-left border-collapse border border-gray-300">
-                    <thead className="sticky top-[-1px]  bg-gray-100 shadow-md  ">
+                    <thead className="sticky top-[-1px]  bg-gray-100 shadow-md z-10 ">
                       <tr className='mt-4'>
                       <th className="p-3 h-12 border-b border-gray-300 text-center">Nombre</th>
                       

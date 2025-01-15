@@ -69,9 +69,11 @@ const Rol = () => {
   return (
     <div className="flex flex-col items-center p-4">
       {loading ? (
-        <div className="flex justify-center items-center h-96">
-          <LoadingSpinner />
-        </div>
+       <div className="overflow-auto mb-0 flex-1 relative">
+                  
+       <LoadingSpinner />
+     
+     </div>
       ) : error ? (
         <p className="text-lg text-red-500">Error: {error}</p>
       ) : status === "EMPTY" ? (

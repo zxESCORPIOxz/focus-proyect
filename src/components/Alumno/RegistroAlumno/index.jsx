@@ -220,7 +220,7 @@ const RegistroAlumno = ({  botonTexto,onFormValidation,onSuccess  }) => {
   useEffect(() => {
     const loadDepartamentos = async () => {
       try {
-        const data = await fetch();
+        const data = await fetchDepartamentos();
         setUbigeo((prevState) => ({ ...prevState, departamentos: data }));
       } catch (error) {
         console.error("Error al cargar departamentos:", error);

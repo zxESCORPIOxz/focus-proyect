@@ -20,6 +20,7 @@ import { listarDocentes } from '../../lib/apiListarDocentes';
 import EditarDocente from '../docente/EditarDocente';
 import DetalleDocente from '../docente/DetalleDocente';
 import { desactivarDocente } from '../../lib/apiDesactivarDocente';
+import { useDocenteContext } from '../../context/DocenteContext';
 
 const ContenidoDocentes = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -53,7 +54,7 @@ const ContenidoDocentes = () => {
   const [selectedAlumno, setSelectedAlumno] = useState([]);
   const [selectedApoderado, setSelectedApoderado] = useState(null);
 
-  const { guardarAlumnoSeleccionado,alumnoSeleccionado } = useAlumnoContext();
+  const { guardarDocenteSeleccionado,docenteSeleccionado } = useDocenteContext();
 
   // Función para manejar el cambio de página
   const handlePageChange = (pageNumber) => {
@@ -123,40 +124,45 @@ const ContenidoDocentes = () => {
     setShowConfirmacionPopup(false);
   };
   
-
-
-  useEffect(() => {
-    const fetchDocentes = async () => {
-    
-      setLoading(true);
+  const fetchDocentes = async () => {
+    setLoading(true); // Activa el indicador de carga
   
-      const response = await listarDocentes(token, institucionId);
-
+    try {
+      const response = await listarDocentes(token, institucionId); // Reemplaza con tu lógica de API
+  
       if (response.status === "SUCCESS") {
-        setDocentes(response.docentes); 
+        setDocentes(response.docentes);
         setFilteredDocentes(response.docentes);
-        
       } else if (response.status === "LOGOUT") {
         setStatus("LOGOUT");
         setModalMessageError(response.message); // Configura el mensaje de error
         setShowErrorPopup(true); // Muestra el popup de error
       } else if (response.status === "FAILED") {
         setModalMessageError(response.message);
-        setDocentes([]); 
-        setShowErrorPopup(true);
+        setDocentes([]);
         setFilteredDocentes([]);
+        setShowErrorPopup(true);
       }
+    } catch (error) {
+      console.error("Error al listar docentes:", error);
+      setModalMessageError("Ocurrió un error inesperado.");
+      setDocentes([]);
+      setFilteredDocentes([]);
+      setShowErrorPopup(true);
+    } finally {
+      setLoading(false); // Desactiva el indicador de carga
+    }
+  };
   
-      setLoading(false);
-    };
-  
+  // Llama a `fetchDocentes` cuando el componente se monte
+  useEffect(() => {
     if (selectedMatriculaId) {
-    fetchDocentes();
-  } else {
-    setDocentes([]); 
-    setFilteredDocentes([]);
-  }
-  }, [token, institucionId]);
+      fetchDocentes();
+    } else {
+      setDocentes([]);
+      setFilteredDocentes([]);
+    }
+  }, [token, institucionId, selectedMatriculaId]);
 
   // Aplicar filtros
   const aplicarFiltros = () => {
@@ -253,21 +259,21 @@ const ContenidoDocentes = () => {
 
 
   const handleBackToListado = () => {
-    guardarAlumnoSeleccionado(""); 
+    guardarDocenteSeleccionado(""); 
     setView("listado")           
                                                                                                  
   };
-  const handleAddAlumno = () => setView("formulario");
+  const handleAddDocente = () => setView("formulario");
 
   
-  const handleDetalleAlumno = (alumnoSeleccionado) => {
-    guardarAlumnoSeleccionado(alumnoSeleccionado); 
+  const handleDetalleDocente = (docenteSeleccionado) => {
+    guardarDocenteSeleccionado(docenteSeleccionado); 
     setView("detalle")           
                                                                                                  
   };
 
-  const handleEditarAlumno = (alumnoSeleccionado) => {
-    guardarAlumnoSeleccionado(alumnoSeleccionado); 
+  const handleEditarDocente = (docenteSeleccionado) => {
+    guardarDocenteSeleccionado(docenteSeleccionado); 
     setView("editar")                                                                                                         
   };
 
@@ -275,7 +281,9 @@ const ContenidoDocentes = () => {
     setIsFormValid(isValid);
   };
   const handleSuccess = () => {
-    console.log("Usuario editado")
+    guardarDocenteSeleccionado(""); 
+    fetchDocentes();
+    setView("listado") 
   };
 
   return (
@@ -352,7 +360,7 @@ const ContenidoDocentes = () => {
                 <div className="mt-6">
                   <button
                     className="bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-                    onClick={handleAddAlumno}
+                    onClick={handleAddDocente}
                   >
                     Nuevo Docente
                   </button>
@@ -369,7 +377,7 @@ const ContenidoDocentes = () => {
                 ) : (
                 <>
                   <table className=" w-full text-left border-collapse border border-gray-300">
-                    <thead className="sticky top-[-1px]  bg-gray-100 shadow-md  ">
+                    <thead className="sticky top-[-1px]  bg-gray-100 shadow-md z-10 ">
                       <tr className='mt-4'>
                       <th className="p-3 h-12 border-b border-gray-300 text-center">Nombre</th>
                       
@@ -417,7 +425,7 @@ const ContenidoDocentes = () => {
                                 <button
                                   className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
                                   onClick={() => {
-                                    handleEditarAlumno(docente)
+                                    handleEditarDocente(docente)
                                   }}
                                 >
                                   <FaEdit className="h-5 w-5" />
@@ -454,7 +462,7 @@ const ContenidoDocentes = () => {
                                 <button
                                   className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
                                   onClick={() => {
-                                    handleDetalleAlumno(docente)
+                                    handleDetalleDocente(docente)
                                   }}
                                 >
                                   <FaInfoCircle className="h-5 w-5" />

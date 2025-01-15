@@ -10,6 +10,8 @@ import SelectorGrados from "../../SelectorGrados";
 import { useRolContext } from "../../../context/RolContext";
 
 import { useUserContext } from "../../../context/UserContext";
+import RegistrarDocente from "../RegistrarDocente";
+import MatricularDocente from "../MatricularDocente";
 
 
 const FormularioNuevoDocente = ({onBackToListado }) => {
@@ -189,7 +191,7 @@ const FormularioNuevoDocente = ({onBackToListado }) => {
         )}
         {step === 2 && (
           <>
-            <RegistroAlumno
+            <RegistrarDocente
               botonTexto="Registrar Alumno"
               onFormValidation={handleFormValidation}
               onSuccess={handleSuccess}
@@ -212,6 +214,13 @@ const FormularioNuevoDocente = ({onBackToListado }) => {
                 Siguiente
               </button>
             </div>
+          </>
+        )}
+        {step === 3 && (
+          <>
+            <MatricularDocente
+              onSuccess={handleSuccessMatricula}
+            />
           </>
         )}
       </div>
