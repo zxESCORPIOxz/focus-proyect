@@ -101,51 +101,23 @@ const Menu = ({ activeOption, setActiveOption }) => {
         seleccionarMatricula(selectedId);
         // console.log("DESDE MENU:" + selectedId)
     };
-    const toggleMenu = () => {
-      setIsMenuOpen(!isMenuOpen);
-    }; 
     return (
-      <>
-       <div className="md:hidden flex items-start justify-between p-2   h-12 w-12 absolute ">
-          <div
-            onClick={toggleMenu}
-            className={`cursor-pointer absolute p-2 transform   ${
-              isMenuOpen ? 'bg-[#5155A6]' : 'bg-[#4B7DBF] rounded-md'
-            }`}
-          >
-            {isMenuOpen ? (
-              
-                  <FaTimes className="text-white text-2xl" />
-              
-              
-            ) : (
-              
-                <FaBars className="text-white text-2xl" />
-              
-            )}
-          </div>
-        </div>
-  
-        {/* Menú Lateral */}
-        <aside
-          className={`bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] text-white flex flex-col w-[290px] lg:w-80 md:w-80 ${
-            isMenuOpen ? "block" : "hidden"
-          } md:block`} // Esto controla la visibilidad en móvil
-        >
-          {/* Contenido del menú lateral */}
-          <div className="w-full md:w-auto flex items-center justify-center space-x-4 ml-1 md:ml-4 mr-4 mt-3 p-1">
+      <aside className="bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] text-white flex flex-col w-[280px] lg:w-80 md:w-80">
+        
+          {/* Header */}
+          <div className="w-full md:w-auto  flex items-center justify-center space-x-4 ml-1 md:ml-4 mr-4 mt-3 p-1 ">
             <img
               src="https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=icon_focusclass"
               alt="Icono FocusClass"
-              className="md:w-11 md:h-11 w-8 h-8 object-contain"
+              className="md:w-11 md:h-11  w-8 h-8 object-contain"
             />
-            <a href="#" className="text-xl md:text-2xl font-semibold">
-              FocusClass
-            </a>
+            <a href="#" className="text-xl md:text-2xl font-semibold">FocusClass</a>
+            
           </div>
+          
   
-          {/* Perfil y demás contenido */}
-          <div className="text-center p-6 mb-4 space-y-4">
+          {/* Perfil */}
+          <div className="text-center p-6 space-y-4">
             <div className="p-2 rounded-lg shadow-lg flex flex-col items-center">
               <img
                 src={defaultUser}
@@ -154,15 +126,13 @@ const Menu = ({ activeOption, setActiveOption }) => {
                 onError={(e) => (e.target.src = defaultUser)}
               />
               <h3 className="text-gray-300">Hola,</h3>
-              <h2 className="text-lg text-white font-bold">
-                {localStorage.getItem("fullName") || "Nombre"}
-              </h2>
+              <h2 className="text-lg text-white font-bold">{localStorage.getItem("fullName") || "Nombre"}</h2>
             </div>
   
             {/* Institución y rol */}
-            <div className="flex flex-col items-center justify-start h-16">
+            <div className="flex flex-col items-center justify-start h-16 ">
               <div className="flex items-center space-x-4">
-                <div className="p-2 rounded-lg shadow-lg flex items-center space-x-2">
+                <div className="p-2 rounded-lg shadow-lg flex items-center space-x-2 ">
                   <img
                     src={defaultImage}
                     alt="Logo Institución"
@@ -170,14 +140,12 @@ const Menu = ({ activeOption, setActiveOption }) => {
                     onError={(e) => (e.target.src = defaultImage)}
                   />
                   <div className="flex-1">
-                    <h2 className="text-base text-gray-200 font-bold break-words mr-1">
-                      {institucionSeleccionada || "Institución 1"}
-                    </h2>
+                    <h2 className="text-base text-gray-200 font-bold break-words mr-1">{institucionSeleccionada|| "Institución 1"}</h2>
                   </div>
                 </div>
               </div>
   
-              <div className="flex mb-1 items-center justify-start h-16">
+              <div className='flex mb-1  items-center justify-start h-16'>
                 <div className="p-2 ml-1 rounded-lg shadow-lg flex items-center bg-gray-300 h-10">
                   <h2 className="text-sm text-black font-bold">{role}</h2>
                 </div>
@@ -196,18 +164,23 @@ const Menu = ({ activeOption, setActiveOption }) => {
                       <select
                         value={selectedMatriculaId}
                         onChange={handleMatriculaChange}
-                        className="text-sm text-black font-bold bg-transparent outline-none pl-1 border border-gray-300"
+                        className="text-sm text-black font-bold bg-transparent outline-none pl-1  border border-gray-300 "
                       >
                         {matriculas.map((matricula, index) => (
-                          <option className="pl-2" key={index} value={matricula.id_matricula}>
+                          <option className='pl-2' key={index} value={matricula.id_matricula}>
                             {matricula.nombre_matricula}
                           </option>
                         ))}
                       </select>
+                     
                     </div>
                   </div>
                 )}
               </div>
+  
+              
+  
+              
             </div>
           </div>
   
@@ -217,7 +190,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
               <button
                 key={item.id}
                 className={`py-3 px-6 flex items-center gap-3 hover:bg-white/20 ${
-                  activeOption === item.id ? "bg-white/20 shadow-lg shadow-blue-500/50" : ""
+                  activeOption === item.id ? 'bg-white/20 shadow-lg shadow-blue-500/50' : ''
                 }`}
                 onClick={() => handleNavigate(item.id)}
               >
@@ -226,21 +199,20 @@ const Menu = ({ activeOption, setActiveOption }) => {
               </button>
             ))}
           </nav>
+        
   
-          {/* Cerrar sesión */}
-          <div className="flex flex-col mb-2">
-            <button
-              className="py-3 px-6 flex items-center gap-3 hover:bg-white/20"
-              onClick={handleLogout}
-            >
-              <FaSignOutAlt className="text-lg" />
-              Cerrar Sesión
-            </button>
-          </div>
-        </aside>
-      </>
+        {/* Cerrar sesión */}
+        <div className="flex flex-col mb-2">
+          <button
+            className="py-3 px-6 flex items-center gap-3 hover:bg-white/20"
+            onClick={handleLogout}
+          >
+            <FaSignOutAlt className="text-lg" />
+            Cerrar Sesión
+          </button>
+        </div>
+      </aside>
     );
-    
 };
 
 export default Menu;
