@@ -40,7 +40,8 @@ const ContenidoAlumnos = () => {
   //PAGINACION
   const itemsPerPage = 10; // Elementos por página
   const [currentPage, setCurrentPage] = useState(1); // Página actual
-
+  const [grados, setGrados] = useState([]);
+  const [secciones, setSecciones] = useState([]);
   const [filtroGrado, setFiltroGrado] = useState("");
   const [filtroSeccion, setFiltroSeccion] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
@@ -126,8 +127,15 @@ const ContenidoAlumnos = () => {
       const response = await listarAlumnos(token, institucionId, selectedMatriculaId); // Llama a la API
   
       if (response.status === "SUCCESS") {
-        setAlumnos(response.alumnos); 
-        setFilteredAlumnos(response.alumnos); // Filtra los alumnos en base a los datos obtenidos
+        const alumnosData = response.alumnos;
+
+        // Extraer valores únicos de grado y sección
+        const uniqueGrados = [...new Set(alumnosData.map((alumno) => alumno.nombre_grado))];
+        const uniqueSecciones = [...new Set(alumnosData.map((alumno) => alumno.nombre_seccion))];
+        setAlumnos(alumnosData);
+        setFilteredAlumnos(alumnosData);
+        setGrados(uniqueGrados);
+        setSecciones(uniqueSecciones); // Filtra los alumnos en base a los datos obtenidos
       } else if (response.status === "LOGOUT") {
         setStatus("LOGOUT");
         setModalMessageError(response.message); // Configura el mensaje de error
@@ -136,7 +144,9 @@ const ContenidoAlumnos = () => {
         setModalMessageError(response.message);
         setAlumnos([]);
         setFilteredAlumnos([]);
-        setShowErrorPopup(true); // Muestra el popup de error
+        setShowErrorPopup(true);
+        setGrados([]);
+        setSecciones([]); // Muestra el popup de error
       }
     } catch (error) {
       console.error("Error al listar alumnos:", error);
@@ -286,6 +296,8 @@ const ContenidoAlumnos = () => {
     setView("listado") 
   };
 
+  console.log(alumnos)
+
   return (
     <div className="flex-1 p-6">
       <header className="bg-[#4B7DBF] text-white rounded-lg flex items-center gap-4 p-4 mb-6">
@@ -328,11 +340,11 @@ const ContenidoAlumnos = () => {
                     onChange={(e) => setFiltroGrado(e.target.value)}
                   >
                     <option value="">Todos</option>
-                    <option value="1">1°</option>
-                    <option value="2">2°</option>
-                    <option value="3">3°</option>
-                    <option value="4">4°</option>
-                    <option value="5">5°</option>
+                {grados.map((grado, index) => (
+                  <option key={index} value={grado}>
+                    {grado}
+                  </option>
+                ))}
                   </select>
                 </div>
                 <div className="flex-1">
@@ -349,9 +361,11 @@ const ContenidoAlumnos = () => {
                     onChange={(e) => setFiltroSeccion(e.target.value)}
                   >
                     <option value="">Todas</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
+                    {secciones.map((seccion, index) => (
+                      <option key={index} value={seccion}>
+                        {seccion}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="flex-1">
