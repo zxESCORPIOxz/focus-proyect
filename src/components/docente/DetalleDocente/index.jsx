@@ -66,7 +66,7 @@ const DetalleDocente = ({onBackToListado }) => {
       estado: docenteSeleccionado.estado,
       img_b64: "", 
     });
-    console.log(formBody1.cursos)
+    
     // console.log(formBody1)
   
 

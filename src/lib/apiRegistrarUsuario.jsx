@@ -42,7 +42,7 @@ export const registerUser = async (userData) => {
   if (data.status !== "SUCCESS") {
     return { status: "FAILED", message: data.message || "Error al iniciar sesión" };
   }
-  console.log(data)
+  
 
   return data;
 };

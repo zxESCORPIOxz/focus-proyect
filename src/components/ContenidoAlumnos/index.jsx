@@ -296,7 +296,7 @@ const ContenidoAlumnos = () => {
     setView("listado") 
   };
 
-  console.log(alumnos)
+  
 
   return (
     <div className="flex-1 p-6">
@@ -361,11 +361,7 @@ const ContenidoAlumnos = () => {
                     onChange={(e) => setFiltroSeccion(e.target.value)}
                   >
                     <option value="">Todas</option>
-                    {secciones.map((seccion, index) => (
-                      <option key={index} value={seccion}>
-                        {seccion}
-                      </option>
-                    ))}
+ 
                   </select>
                 </div>
                 <div className="flex-1">

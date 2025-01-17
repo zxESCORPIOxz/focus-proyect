@@ -68,7 +68,7 @@ const DetalleAlumno = ({onBackToListado }) => {
     id_seccion: alumnoSeleccionado.id_seccion,
     img_b64: "",  
   });
-  console.log(formBody1)
+
 
   const [grados, setGrados] = useState({
     id_nivel:alumnoSeleccionado.id_nivel, 

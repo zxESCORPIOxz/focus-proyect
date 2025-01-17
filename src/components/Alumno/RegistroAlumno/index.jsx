@@ -50,7 +50,7 @@ const RegistroAlumno = ({  botonTexto,onFormValidation,onSuccess  }) => {
     id_seccion: "",
     img_b64: "",  
   });
-  console.log(formBody1)
+  
   
   
   useEffect(() => {
@@ -98,7 +98,7 @@ const RegistroAlumno = ({  botonTexto,onFormValidation,onSuccess  }) => {
 
   const validateDocument = () => {
     const { tipo_doc, num_documento } = formBody1;
-    console.log(num_documento)
+    
     const longitudEsperada = tipo_doc === "DNI" ? 8 : 12;
     if (num_documento.length !== longitudEsperada) {
       return `El ${tipo_doc} debe tener ${longitudEsperada} caracteres.`;
@@ -185,7 +185,7 @@ const RegistroAlumno = ({  botonTexto,onFormValidation,onSuccess  }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formBody1)
+    
 
     if (validateForm()) {
       try {

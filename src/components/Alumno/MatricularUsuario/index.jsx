@@ -22,7 +22,7 @@ const FormularioMatriculaAlumno = ({onSuccess}) => {
     const [showPopupSucces, setShowPopupSucces] = useState(false);
     const [status, setStatus] = useState("");
     const usuarioId=usuarioVerificado.id;
-    console.log(institucionId)
+    
     useEffect(() => {
         setFormBody2((prevFormBody) => ({
           ...prevFormBody,
@@ -71,7 +71,7 @@ const FormularioMatriculaAlumno = ({onSuccess}) => {
       };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formBody2)
+       
     
        
           try {

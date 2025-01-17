@@ -49,7 +49,7 @@ const RecuperarContraseña = () => {
       setModalMessageError("Ha ocurrido un error, por favor intenta nuevamente.");
       setShowErrorPopup(true);
     }
-    console.log("Verifying email:", email);
+    
     
   };
 

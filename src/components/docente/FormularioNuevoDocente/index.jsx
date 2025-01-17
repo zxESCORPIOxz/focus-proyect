@@ -91,7 +91,7 @@ const FormularioNuevoDocente = ({onBackToListado }) => {
             setStatus("LOGOUT")
             setModalMessageError(response.message);
             setShowErrorPopup(true);
-            console.log("status: "+response.status +"y" + status)
+            
         }else if(response.status === "FAILED"){
           
           setModalMessageError(response.message)

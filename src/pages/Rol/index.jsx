@@ -28,12 +28,12 @@ const Rol = () => {
 
   useEffect(() => {
       const fetchRoles = async () => {
-        console.log(token + status)
+        
         const response = await listarRoles(token);
         
         if (response.status === "SUCCESS") {
           setRolesData(response.entities);
-          console.log( "hola" +response.entities)
+          
         } else if (response.status === "LOGOUT") {
           setStatus("LOGOUT");
           setModalMessageError(response.message);

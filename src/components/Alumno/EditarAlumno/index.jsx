@@ -59,7 +59,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
     id_seccion: alumnoSeleccionado.id_seccion,
     img_b64: "",  
   });
-  // console.log(formBody1)
+  
   const [grados, setGrados] = useState({
     id_nivel:alumnoSeleccionado.id_nivel, 
     id_grado:alumnoSeleccionado.id_grado,
@@ -68,7 +68,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
  
   });
 
-  
+  console.log(grados)
 
 
 
@@ -101,7 +101,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
 
   const validateDocument = () => {
     const { tipo_doc, num_documento } = formBody1;
-    console.log(num_documento)
+    
     const longitudEsperada = tipo_doc === "DNI" ? 8 : 12;
     if (num_documento.length !== longitudEsperada) {
       return `El ${tipo_doc} debe tener ${longitudEsperada} caracteres.`;
@@ -188,7 +188,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formBody1)
+    
 
     if (validateForm()) {
       try {
@@ -285,7 +285,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
       obtenerUbigeoGeneral();
     }
   }, [alumnoSeleccionado.ubigeo]);
-  console.log(ubigeo.departamento)
+  
 
   return (
     <>
