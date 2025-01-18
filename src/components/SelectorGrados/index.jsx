@@ -25,7 +25,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
       navigate('/login');
     }
   };
-
+  
   const handleSeccionChange = (e) => {
     const selectedIdSeccion = e.target.value;
     if (selectedIdSeccion !== seccionSeleccionada) {
@@ -36,6 +36,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
     }
   };
 
+  console.log(nivelSeleccionado, gradoSeleccionado,seccionSeleccionada)
   // Obtener grados y niveles al cargar el componente
   useEffect(() => {
     const fetchGrados = async () => {
@@ -59,8 +60,15 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
     if (nivelSeleccionado) {
       const selectedNivel = niveles.find(nivel => nivel.id_nivel === parseInt(nivelSeleccionado));
       if (selectedNivel) {
-        setGrados(selectedNivel.grados);
-        setGradoSeleccionado('');
+        const nuevosGrados = selectedNivel.grados;
+        setGrados(nuevosGrados);
+  
+        // Mantener el grado seleccionado si está en la nueva lista de grados
+        if (!nuevosGrados.some(grado => grado.id_grado === parseInt(gradoSeleccionado))) {
+          setGradoSeleccionado(''); // Restablecer si el grado ya no es válido
+        }
+  
+        // Limpiar las secciones porque el nivel cambió
         setSecciones([]);
       }
     }
@@ -71,8 +79,13 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
     if (gradoSeleccionado) {
       const selectedGrado = grados.find(grado => grado.id_grado === parseInt(gradoSeleccionado));
       if (selectedGrado) {
-        setSecciones(selectedGrado.secciones);
-        setSeccionSeleccionada('');
+        const nuevasSecciones = selectedGrado.secciones;
+        setSecciones(nuevasSecciones);
+  
+        // Mantener la sección seleccionada si está en la nueva lista de secciones
+        if (!nuevasSecciones.some(seccion => seccion.id_seccion === parseInt(seccionSeleccionada))) {
+          setSeccionSeleccionada(''); // Restablecer si la sección ya no es válida
+        }
       }
     }
   }, [gradoSeleccionado, grados]);
