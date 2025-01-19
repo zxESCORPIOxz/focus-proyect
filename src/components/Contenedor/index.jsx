@@ -22,12 +22,12 @@ const Contenedor = ({ roles }) => {
   }, [roles]);
 
   return (
-    <div className="flex w-full h-full">
+    <div className="flex w-full h-full overflow-hidden">
       {/* Menú lateral */}
       <Menu activeOption={activeOption} setActiveOption={setActiveOption} />
 
       {/* Contenido principal */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-0 md:p-6 mt-10 md:mt-0">
         {/* Mostrar contenido según la opción activa */}
         {availableSections.alumnos && activeOption === 'alumnos' && <ContenidoAlumnos />}
         {availableSections.docentes && activeOption === 'docentes' && <ContenidoDocentes />}

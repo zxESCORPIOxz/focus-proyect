@@ -100,42 +100,47 @@ const FormularioMatriculaAlumno = ({onSuccess}) => {
         
       };
     
-    return (
+      return (
         <>
-            <div className="bg-white rounded-lg shadow-lg p-10 w-full max-w-lg md:max-w-5xl">
-                <h1 className="text-3xl font-bold mb-6 text-blue-600">Paso 2: Registrar Alumno</h1>
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-full sm:max-w-lg md:max-w-5xl mx-auto">
+                <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-blue-600">Paso 2: Registrar Alumno</h1>
+    
                 {/* Sección de SelectorGrados */}
                 <div className="space-y-4 mb-3">
-                    <h2 className="text-2xl font-semibold text-blue-600">Información Académica</h2>
+                    <h2 className="text-xl sm:text-2xl font-semibold text-blue-600">Información Académica</h2>
                     <SelectorGrados
                         token={token}
                         id_institucion={institucionId}
                         onSeccionChange={handleSeccionChange}
                     />
                 </div>
+    
+                {/* Botón Registrar Alumno */}
                 <button
-                onClick={handleSubmit}
-                className="mt-4 w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-blue-700 transition duration-300"
-            >
-                Registrar Alumno
-            </button>
+                    onClick={handleSubmit}
+                    className="mt-4 w-full py-3 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-blue-700 transition duration-300"
+                >
+                    Registrar Alumno
+                </button>
+    
                 {/* Popups */}
                 {showErrorPopup && (
                     <PopupErrorRegister
-                    message={modalMessageError}
-                    onClose={handleClosePopupError}
+                        message={modalMessageError}
+                        onClose={handleClosePopupError}
                     />
                 )}
-
+    
                 {showPopupSucces && (
                     <PopupSuccesGeneral
-                    message={successMessage}
-                    onClose={handleClosePopupSucces}
+                        message={successMessage}
+                        onClose={handleClosePopupSucces}
                     />
                 )}
             </div>
         </>
-    )
+    );
+    
 }
 
 export default FormularioMatriculaAlumno

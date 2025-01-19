@@ -106,6 +106,9 @@ const Menu = ({ activeOption, setActiveOption }) => {
     }; 
     return (
       <>
+      <div className='sd:absolute'>
+
+      </div>
        <div className="md:hidden flex items-start justify-between p-2   h-12 w-12 absolute ">
           <div
             onClick={toggleMenu}

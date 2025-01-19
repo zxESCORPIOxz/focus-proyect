@@ -125,7 +125,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
 
   return (
     <div className="space-y-4">
-      <div className="flex space-x-4">
+      <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
         <div className="flex-1">
           <select
             value={nivelSeleccionado}
@@ -140,7 +140,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
             ))}
           </select>
         </div>
-
+  
         <div className="flex-1">
           <select
             value={gradoSeleccionado}
@@ -156,7 +156,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
             ))}
           </select>
         </div>
-
+  
         <div className="flex-1">
           <select
             value={seccionSeleccionada}
@@ -173,7 +173,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
           </select>
         </div>
       </div>
-
+  
       {showErrorPopup && (
         <PopupErrorRegister
           message={modalMessageError}
@@ -182,6 +182,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
       )}
     </div>
   );
+  
 };
 
 export default SelectorGrados;
