@@ -540,7 +540,7 @@ const ContenidoAlumnos = () => {
                     
                   </table>
                 </div>
-          <div className="md:hidden w-full h-full">
+          <div className="md:hidden w-full h-full transition-all duration-300 ease-in-out ">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
               {currentAlumnos.map((alumno) => (
                 <div key={alumno.id_alumno} className="bg-white p-4 rounded-lg shadow-md">

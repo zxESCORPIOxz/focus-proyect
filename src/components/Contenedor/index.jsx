@@ -27,7 +27,7 @@ const Contenedor = ({ roles }) => {
       <Menu activeOption={activeOption} setActiveOption={setActiveOption} />
 
       {/* Contenido principal */}
-      <div className="flex-1 p-0 md:p-6 mt-10 md:mt-0">
+      <div className="flex-1 p-0 md:p-6 mt-10 md:mt-0 transition-all duration-300 ease-in-out ml-0 ">
         {/* Mostrar contenido según la opción activa */}
         {availableSections.alumnos && activeOption === 'alumnos' && <ContenidoAlumnos />}
         {availableSections.docentes && activeOption === 'docentes' && <ContenidoDocentes />}

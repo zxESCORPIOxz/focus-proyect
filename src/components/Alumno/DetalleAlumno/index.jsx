@@ -109,99 +109,101 @@ const DetalleAlumno = ({onBackToListado }) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-lg p-10 w-full max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-blue-600 text-center">Detalle del Alumno</h1>
-
+      <div className="bg-white rounded-lg shadow-lg p-6 sm:p-10 w-full max-w-3xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-blue-600 text-center">
+          Detalle del Alumno
+        </h1>
+  
         {/* Imagen */}
         <div className="flex justify-center mb-6">
           <img
             src={formBody1.img_b64 || formBody1.url_imagen} // Muestra img_b64 si está disponible, de lo contrario url_imagen
             alt="Foto del alumno"
-            className="w-32 h-40 rounded-full border border-gray-300"
+            className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border border-gray-300"
           />
         </div>
-
+  
         {/* Detalles */}
         <div className="grid grid-cols-1 gap-4">
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Nombre:</span>
             <span className="text-gray-900">{formBody1.nombre}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Apellido Paterno:</span>
             <span className="text-gray-900">{formBody1.apellido_paterno}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Apellido Materno:</span>
             <span className="text-gray-900">{formBody1.apellido_materno}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Sexo:</span>
             <span className="text-gray-900">{formBody1.sexo}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Email:</span>
             <span className="text-gray-900">{formBody1.email}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Teléfono:</span>
             <span className="text-gray-900">{formBody1.telefono}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Dirección:</span>
             <span className="text-gray-900">{formBody1.direccion}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Fecha de Nacimiento:</span>
             <span className="text-gray-900">{formBody1.fecha_nacimiento}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Tipo de Documento:</span>
             <span className="text-gray-900">{formBody1.tipo_doc}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Número de Documento:</span>
             <span className="text-gray-900">{formBody1.num_documento}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Institución:</span>
             <span className="text-gray-900">{institucionSeleccionada}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Matrícula:</span>
             <span className="text-gray-900">{formBody1.nombre_matricula}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Nivel:</span>
             <span className="text-gray-900">{formBody1.nombre_nivel}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Grado:</span>
             <span className="text-gray-900">{formBody1.nombre_grado}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Sección:</span>
             <span className="text-gray-900">{formBody1.nombre_seccion}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Departamento:</span>
             <span className="text-gray-900">{departamento}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Provincia:</span>
             <span className="text-gray-900">{provincia}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col sm:flex-row sm:justify-between">
             <span className="font-semibold text-gray-700">Distrito:</span>
             <span className="text-gray-900">{distrito}</span>
           </div>
         </div>
-
+  
         {/* Botón de regreso */}
         <div className="mt-8 flex justify-center">
           <button
             onClick={onBackToListado}
-            className="py-3 px-10 bg-gray-400 text-white font-medium text-lg rounded-lg hover:bg-gray-500 transition duration-300"
+            className="py-3 px-6 sm:px-10 bg-gray-400 text-white font-medium text-base sm:text-lg rounded-lg hover:bg-gray-500 transition duration-300"
           >
             Regresar
           </button>
@@ -209,6 +211,7 @@ const DetalleAlumno = ({onBackToListado }) => {
       </div>
     </>
   );
+  
 };
 
 export default DetalleAlumno;

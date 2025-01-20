@@ -289,11 +289,11 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-lg p-10 w-full max-w-lg md:max-w-5xl">
-        <h1 className="text-3xl font-bold mb-6 text-blue-600">Editar Alumno</h1>
+      <div className="bg-white rounded-lg shadow-lg p-6 sm:p-8 md:p-10 w-full max-w-lg md:max-w-5xl">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-blue-600">Editar Alumno</h1>
         {/* Sección de SelectorGrados */}
         <div className="space-y-4 mb-3">
-            <h2 className="text-2xl font-semibold text-blue-600">Información Académica</h2>
+            <h2 className="text-xl md:text-2xl font-semibold text-blue-600">Información Académica</h2>
             <SelectorGrados
             token={token}
             id_institucion={institucionId}
@@ -304,9 +304,9 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
       
         {/* Sección de Datos Personales */}
       <div className="space-y-4 mb-8">
-        <h2 className="text-2xl font-semibold text-blue-600">Datos Personales</h2>
+        <h2 className="text-xl md:text-2xl font-semibold text-blue-600">Datos Personales</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1  md:grid-cols-2 gap-3">
             <input
               type="text"
               
@@ -377,43 +377,47 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
                 <p className="ml-1 text-red-500 text-sm mt-2">{errorMessage.telefono}</p>
               )}
 
-<select
-  name="departamento"
-  value={ubigeo.departamento}
-  onChange={handleInputChangeUbigeo}
-  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
->
-  <option value="">Selecciona un departamento</option>
-  {ubigeo.departamentos.map((dep) => (
-    <option key={dep.id} value={dep.id}>{dep.nombre}</option> // Asegúrate de que el valor sea el nombre del departamento
-  ))}
-</select>
+              <div className="grid grid-cols-1  gap-4">
+                <select
+                  name="departamento"
+                  value={ubigeo.departamento}
+                  onChange={handleInputChangeUbigeo}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
+                >
+                  <option value="">Selecciona un departamento</option>
+                  {ubigeo.departamentos.map((dep) => (
+                    <option key={dep.id} value={dep.id}>{dep.nombre}</option> // Asegúrate de que el valor sea el nombre del departamento
+                  ))}
+                </select>
 
-<select
-  name="provincia"
-  value={ubigeo.provincia}
-  onChange={handleInputChangeUbigeo}
-  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
-  disabled={!ubigeo.departamentos.length}
->
-  <option value="">Selecciona una provincia</option>
-  {ubigeo.provincias.map((prov) => (
-    <option key={prov.id} value={prov.id}>{prov.nombre}</option> // Asegúrate de que el valor sea el nombre de la provincia
-  ))}
-</select>
+                <select
+                  name="provincia"
+                  value={ubigeo.provincia}
+                  onChange={handleInputChangeUbigeo}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
+                  disabled={!ubigeo.departamentos.length}
+                >
+                  <option value="">Selecciona una provincia</option>
+                  {ubigeo.provincias.map((prov) => (
+                    <option key={prov.id} value={prov.id}>{prov.nombre}</option> // Asegúrate de que el valor sea el nombre de la provincia
+                  ))}
+                </select>
 
-<select
-  name="distrito"
-  value={ubigeo.distrito}
-  onChange={handleInputChangeUbigeo}
-  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
-  disabled={!ubigeo.provincias.length}
->
-  <option value="">Selecciona un distrito</option>
-  {ubigeo.distritos.map((dist) => (
-    <option key={dist.id} value={dist.id}>{dist.nombre}</option>
-  ))}
-</select>
+                <select
+                  name="distrito"
+                  value={ubigeo.distrito}
+                  onChange={handleInputChangeUbigeo}
+                  className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
+                  disabled={!ubigeo.provincias.length}
+                >
+                  <option value="">Selecciona un distrito</option>
+                  {ubigeo.distritos.map((dist) => (
+                    <option key={dist.id} value={dist.id}>{dist.nombre}</option>
+                  ))}
+                </select>
+              </div>
+
+
 
           <input
             type="text"
@@ -438,7 +442,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-600"
           />
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <select
               name="tipo_doc"
               value={formBody1.tipo_doc}
@@ -496,17 +500,17 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
             )}
 
           {errorMessage.imagen && <p className="text-red-500 text-sm">{errorMessage.imagen}</p>}
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <button
               type="button"
               onClick={onBackToListado}
-              className="py-3 px-10 bg-gray-400 text-white font-medium text-lg rounded-lg hover:bg-gray-500 transition duration-300"
+              className="py-3 px-6 mr-1 bg-gray-400 text-white font-medium text-lg rounded-lg hover:bg-gray-500 transition duration-300"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="py-3 px-6 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
+              className="py-3 px-4 ml-1 bg-blue-600 text-white font-medium text-lg rounded-lg hover:bg-indigo-500 transition duration-300"
             >
               Editar Alumno
             </button>

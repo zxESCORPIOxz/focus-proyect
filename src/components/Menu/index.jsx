@@ -106,35 +106,30 @@ const Menu = ({ activeOption, setActiveOption }) => {
     }; 
     return (
       <>
-      <div className='sd:absolute'>
-
-      </div>
-       <div className="md:hidden flex items-start justify-between p-2   h-12 w-12 absolute ">
-          <div
-            onClick={toggleMenu}
-            className={`cursor-pointer absolute p-2 transform   ${
-              isMenuOpen ? 'bg-[#5155A6]' : 'bg-[#4B7DBF] rounded-md'
-            }`}
-          >
-            {isMenuOpen ? (
-              
-                  <FaTimes className="text-white text-2xl" />
-              
-              
-            ) : (
-              
-                <FaBars className="text-white text-2xl" />
-              
-            )}
-          </div>
+        <div className="md:hidden flex items-start justify-between p-2 h-12 w-12 fixed top-2 left-2 z-50">
+        <div
+          onClick={toggleMenu}
+          className={`cursor-pointer p-2 transform ${
+            isMenuOpen ? "bg-[#5155A6]" : "bg-[#4B7DBF] rounded-md"
+          }`}
+        >
+          {isMenuOpen ? (
+            <FaTimes className="text-white text-2xl" />
+          ) : (
+            <FaBars className="text-white text-2xl" />
+          )}
         </div>
+      </div>
   
         {/* Menú Lateral */}
         <aside
-          className={`bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] text-white flex flex-col w-[290px] lg:w-80 md:w-80 ${
-            isMenuOpen ? "block" : "hidden"
-          } md:block`} // Esto controla la visibilidad en móvil
-        >
+        className={`
+          bg-gradient-to-b from-[#5155A6] to-[#4B7DBF] text-white flex flex-col transition-all duration-300 ease-in-out 
+          ${isMenuOpen ? "fixed z-40 h-full w-[290px] opacity-100 transform translate-x-0" : "absolute z-40 h-full w-[290px] opacity-0 transform -translate-x-full"}
+          md:relative md:w-[290px] lg:w-80 md:opacity-100 md:translate-x-0
+        `}
+      >
+           
           {/* Contenido del menú lateral */}
           <div className="w-full md:w-auto flex items-center justify-center space-x-4 ml-1 md:ml-4 mr-4 mt-3 p-1">
             <img
@@ -241,6 +236,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
             </button>
           </div>
         </aside>
+        
       </>
     );
     
