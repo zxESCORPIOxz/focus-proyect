@@ -287,14 +287,14 @@ const ContenidoDocentes = () => {
   };
 
   return (
-    <div className="flex-1 p-6">
+    <div className="flex-1 mt-7 md:p-6 md:mt-0">
       <header className="bg-[#4B7DBF] text-white rounded-lg flex items-center gap-4 p-4 mb-6">
-        <FaChalkboardTeacher className="text-5xl" />
-        <h1 className="text-lg font-bold">Módulo: Gestión de Docentes</h1>
+        <FaChalkboardTeacher className="text-3xl sm:text-5xl" />
+        <h1 className="text-lg sm:text-xl font-bold">Módulo: Gestión de Docentes</h1>
       </header>
 
-      <main className="bg-white py-2 px-4 rounded-lg shadow">
-        <div className="h-[calc(92vh-160px)] flex flex-col justify-between">
+      <main className="sd:h-screen  bg-white py-2 px-4 rounded-lg shadow">
+        <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
           {view === "formulario" ? (
             <div className="overflow-auto mb-0 flex-1">
               <FormularioNuevoDocente onBackToListado={handleBackToListado} />
@@ -313,9 +313,7 @@ const ContenidoDocentes = () => {
             
           ) : (
             <>
-              <div className="flex gap-4 mb-6">
-                
-                
+              <div className="flex flex-col md:flex-row gap-4 mb-6">
                 <div className="flex-1">
                   <label
                     htmlFor="filter-estado"
@@ -351,13 +349,14 @@ const ContenidoDocentes = () => {
                     placeholder="Ingrese número"
                   />
                 </div>
-                <div className="mt-6">
+                <div className='flex flex-row justify-between md:mt-6'>
+                <div className="md:mx-2">
                   <button className="bg-[#5155A6] text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                   onClick={aplicarFiltros}>
                     Aplicar Filtros
                   </button>
                 </div>
-                <div className="mt-6">
+                <div className="md:mt-0">
                   <button
                     className="bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-blue-700"
                     onClick={handleAddDocente}
@@ -365,6 +364,8 @@ const ContenidoDocentes = () => {
                     Nuevo Docente
                   </button>
                 </div>
+                </div>
+                
               </div>
 
               <div className="flex-1 overflow-auto mb-0">
@@ -376,7 +377,8 @@ const ContenidoDocentes = () => {
                   <p className="text-center text-gray-500">No existen alumnos para listar.</p>
                 ) : (
                 <>
-                  <table className=" w-full text-left border-collapse border border-gray-300">
+                <div className="hidden md:block">
+                <table className=" w-full text-left border-collapse border border-gray-300">
                     <thead className="sticky top-[-1px]  bg-gray-100 shadow-md z-10 ">
                       <tr className='mt-4'>
                       <th className="p-3 h-12 border-b border-gray-300 text-center">Nombre</th>
@@ -491,6 +493,101 @@ const ContenidoDocentes = () => {
                     </tbody>
                     
                   </table>
+                </div>
+                <div className="md:hidden w-full h-full transition-all duration-300 ease-in-out ">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {currentDocentes.map((docente) => (
+                          <div key={docente.id_docente} className="bg-white p-4 rounded-lg shadow-md">
+                            <h2 className="text-xl font-semibold">{docente.nombre+ " " + docente.apellido_paterno + " " + docente.apellido_materno}</h2>
+                            <p className="text-sm text-gray-600">Especialidad: {docente.especialidad}</p>
+                            <p className="text-sm text-gray-600">
+                              Cursos:{" "}
+                              {docente.cursos.length > 0 ? (
+                                <ul className="list-disc list-inside">
+                                  {docente.cursos.map((curso) => (
+                                    <li key={curso.id_curso}>{curso.nombre_curso}</li>
+                                  ))}
+                                </ul>
+                              ) : (
+                                <span className="text-gray-500 italic">No tiene cursos asignados</span>
+                              )}
+                            </p>
+                            <p className="text-sm text-gray-600">N° Documento: {docente.num_documento}</p>
+                            <p
+                              className={`mt-2 text-sm font-bold ${docente.estado === "Activo" ? "text-green-600" : "text-red-600"}`}
+                            >
+                              {docente.estado}
+                            </p>
+                            <div className="mt-4 flex justify-between">
+                            <div className="flex space-x-4 justify-center">
+                                {/* Botón Editar Alumno */}
+                                <div className="relative group">
+                                  <button
+                                    className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                                    onClick={() => {
+                                      handleEditarDocente(docente)
+                                    }}
+                                  >
+                                    <FaEdit className="h-5 w-5" />
+                                  </button>
+                                  <span className="absolute -top-5 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Editar
+                                  </span>
+                                </div>
+  
+                                {/* Botón Activar/Desactivar Alumno */}
+                                <div className="relative group">
+                                  {docente.estado === "Activo" ? (
+                                    <button
+                                      className="px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-red-500 hover:bg-red-600"
+                                      onClick={() => desactivarHandlerPopup(docente.id_docente)}
+                                    >
+                                      <FaLock className="h-5 w-5" />
+                                    </button>
+                                  ) : (
+                                    <button
+                                      className="px-4 py-2 rounded-lg text-white hover:bg-opacity-80 bg-green-500 hover:bg-green-600"
+                                      onClick={() => activarHandlerPopup(docente.id_docente)}
+                                    >
+                                      <FaUnlock className="h-5 w-5" />
+                                    </button>
+                                  )}
+                                  <span className="absolute -top-5 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    {docente.estado === "Activo" ? "Desactivar" : "Activar"}
+                                  </span>
+                                </div>
+  
+                                {/* Botón Detalle Alumno */}
+                                <div className="relative group">
+                                  <button
+                                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600"
+                                    onClick={() => {
+                                      handleDetalleDocente(docente)
+                                    }}
+                                  >
+                                    <FaInfoCircle className="h-5 w-5" />
+                                  </button>
+                                  <span className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                    Ver Detalles
+                                  </span>
+                                </div>
+  
+                                {/* Botón Grupos */}
+                              <div className="relative group">
+                                <button className="bg-violet-500 text-white px-[12px] py-2 rounded-lg hover:bg-violet-600">
+                                  <FaBook className="h-5 w-5" />
+                                </button>
+                                <span className="absolute -top-10 left-1/2 transform -translate-x-1/2 px-2 py-1 text-xs text-white bg-gray-700 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                  Asignar Cursos
+                                </span>
+                              </div>
+                              </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
                 </>
               )}
               {showConfirmacionPopup && (

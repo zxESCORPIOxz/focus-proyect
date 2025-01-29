@@ -60,9 +60,9 @@ const Menu = ({ activeOption, setActiveOption }) => {
   const coordinatorMenuItems = [
     { id: 'alumnos', icon: <FaUserGraduate />, label: 'Gestión de Alumnos' },
     { id: 'docentes', icon: <FaChalkboardTeacher />, label: 'Gestión de Docentes' },
-    { id: 'cursos', icon: <FaBookOpen />, label: 'Gestión de Cursos' },
-    { id: 'informes', icon: <FaClipboardList />, label: 'Informes' },
-    { id: 'noticias', icon: <FaNewspaper />, label: 'Noticias' },
+    // { id: 'cursos', icon: <FaBookOpen />, label: 'Gestión de Cursos' },
+    // { id: 'informes', icon: <FaClipboardList />, label: 'Informes' },
+    // { id: 'noticias', icon: <FaNewspaper />, label: 'Noticias' },
   ];
 
   // Menú para Docente
@@ -226,7 +226,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
           </nav>
   
           {/* Cerrar sesión */}
-          <div className="flex flex-col mb-2">
+          <div className="flex flex-col mt-auto mb-1">
             <button
               className="py-3 px-6 flex items-center gap-3 hover:bg-white/20"
               onClick={handleLogout}

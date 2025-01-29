@@ -36,7 +36,7 @@ const SelectorGrados = ({ token, id_institucion, onSeccionChange, alumnoSeleccio
     }
   };
 
-  console.log(nivelSeleccionado, gradoSeleccionado,seccionSeleccionada)
+  
   // Obtener grados y niveles al cargar el componente
   useEffect(() => {
     const fetchGrados = async () => {

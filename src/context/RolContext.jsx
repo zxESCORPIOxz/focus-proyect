@@ -8,13 +8,15 @@ export const useRolContext = () => {
 
 export const RolProvider = ({ children }) => {
   const [rolSeleccionado, setRolSeleccionado] = useState(null);
+  const [idRolSeleccionado, setIdRolSeleccionado] = useState(null);
   const [institucionSeleccionada, setInstitucionSeleccionada] = useState(null);
   const [institucionId, setInstitucionId] = useState(null);
   const [selectedMatriculaId,setSelectedMatriculaId] = useState("");
   const [matriculas, setMatriculas] = useState([]);
   const [error, setError] = useState(null);
 
-  const seleccionarRol = (rol, institucionNombre, institucionId, matriculas) => {
+  const seleccionarRol = (rol, institucionNombre, institucionId, matriculas,idRolSeleccionado) => {
+    setIdRolSeleccionado(idRolSeleccionado);
     setRolSeleccionado(rol);
     setInstitucionSeleccionada(institucionNombre);
     setInstitucionId(institucionId);
@@ -44,6 +46,7 @@ export const RolProvider = ({ children }) => {
         institucionId,
         matriculas,
         seleccionarRol,
+        idRolSeleccionado,
         seleccionarMatricula,
         clearRolData,
         error,

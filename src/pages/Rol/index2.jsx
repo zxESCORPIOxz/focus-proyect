@@ -10,7 +10,7 @@ const defaultImage = "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/ser
 
 const Rol = () => {
   const { token, error, clearAuth } = useAuthContext();
-  const { seleccionarRol, setError,rolSeleccionado,institucionId,institucionSeleccionada } = useRolContext(); // Usamos el contexto aquí
+  const { seleccionarRol, setError,rolSeleccionado,institucionId,institucionSeleccionada,idRolSeleccionado} = useRolContext(); // Usamos el contexto aquí
   const [loading, setLoading] = useState(true);  
   const [rolesData, setRolesData] = useState([]);
   const navigate = useNavigate();
@@ -60,8 +60,8 @@ const Rol = () => {
 
   const groupedEntities = groupByRole(rolesData);
 
-  const handleRoleClick = (role, institutionName, id_institucion, matriculas) => {
-    seleccionarRol(role, institutionName,id_institucion, matriculas); 
+  const handleRoleClick = (role, institutionName, id_institucion, matriculas,idRolSeleccionado) => {
+    seleccionarRol(role, institutionName,id_institucion, matriculas,idRolSeleccionado); 
     
     navigate("/dashboard"); // Redirigir directamente después de la selección sin usar localStorage
   };
@@ -89,7 +89,7 @@ const Rol = () => {
                     key={idx}
                     className="bg-white border rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow flex items-center cursor-pointer"
                     onClick={() =>
-                      handleRoleClick(role, entity.nombre_ie, entity.id_institucion, entity.matriculas)
+                      handleRoleClick(role, entity.nombre_ie, entity.id_institucion, entity.matriculas ,entity.id)
                     }
                   >
                     <div className="mr-4">

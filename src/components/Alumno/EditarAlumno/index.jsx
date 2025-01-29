@@ -68,7 +68,7 @@ const EditarAlumno = ({onBackToListado, onFormValidation,onSuccess  }) => {
  
   });
 
-  console.log(grados)
+  
 
 
 

@@ -5,20 +5,34 @@ import ContenidoDocentes from '../ContenidoDocentes';
 import ContenidoCursos from '../ContenidoCursos';
 
 const Contenedor = ({ roles }) => {
-  const [activeOption, setActiveOption] = useState('alumnos'); // Opción activa
+  const [activeOption, setActiveOption] = useState(null); // Opción activa
   const [availableSections, setAvailableSections] = useState({
     alumnos: false,
     docentes: false,
     cursos: false,
   });
+ 
 
   useEffect(() => {
-    // Activa o desactiva las opciones según los roles
-    setAvailableSections({
-      alumnos: roles.includes('Coordinador') || roles.includes('Docente'), // Acceso a 'alumnos' para Coordinador o Docente
-      docentes: roles.includes('Coordinador'), // Acceso a 'docentes' solo para Coordinador
-      cursos: roles.includes('Coordinador'), // Acceso a 'cursos' solo para Coordinador
-    });
+    // Configura las secciones disponibles según los roles
+    const sections = {
+      alumnos: roles.includes('Coordinador') || roles.includes('Docente'), // Acceso a 'alumnos'
+      docentes: roles.includes('Coordinador'), // Acceso a 'docentes'
+      cursos: roles.includes('Coordinador') || roles.includes('Docente'), // Acceso a 'cursos'
+    };
+    
+
+    setAvailableSections(sections);
+
+    // Configura la opción activa inicial según los roles
+    
+    if (roles.includes('Coordinador')) {
+      setActiveOption('alumnos');
+    } else if (roles.includes('Docente')) {
+      setActiveOption('cursos');
+    } else {
+      setActiveOption(null);
+    }
   }, [roles]);
 
   return (
@@ -27,11 +41,14 @@ const Contenedor = ({ roles }) => {
       <Menu activeOption={activeOption} setActiveOption={setActiveOption} />
 
       {/* Contenido principal */}
-      <div className="flex-1 p-0 md:p-6 mt-10 md:mt-0 transition-all duration-300 ease-in-out ml-0 ">
+      <div className="flex-1 p-0 md:p-6 mt-10 md:mt-0 transition-all duration-300 ease-in-out ml-0">
         {/* Mostrar contenido según la opción activa */}
         {availableSections.alumnos && activeOption === 'alumnos' && <ContenidoAlumnos />}
         {availableSections.docentes && activeOption === 'docentes' && <ContenidoDocentes />}
         {availableSections.cursos && activeOption === 'cursos' && <ContenidoCursos />}
+
+        {/* Mostrar mensaje si no hay ninguna sección activa */}
+        {!activeOption && <p>Selecciona una opción del menú</p>}
       </div>
     </div>
   )
