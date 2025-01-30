@@ -19,8 +19,9 @@ import { listarCursos } from '../../lib/apiListarCursos';
 
 import ListarAlumnosCurso from '../Curso/ListarAlumnosCurso';
 import { useCursoContext } from '../../context/CursoContext';
+import ListarAlumnosAsistencia from '../Asistencia/ListarAlumnosAsistencia';
 
-const ContenidoCursos = () => {
+const ContenidoAsistencia = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [view, setView] = useState("listado"); 
   const { clearAuth,token } = useAuthContext();
@@ -31,7 +32,7 @@ const ContenidoCursos = () => {
   const { institucionId,selectedMatriculaId,idRolSeleccionado } = useRolContext();
   const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [modalMessageError, setModalMessageError] = useState("");
-  const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
+  const { guardarCursoSeleccionado } = useCursoContext();
   const [showConfirmacionPopup, setShowConfirmacionPopup] = useState(false);
   const [modalMessageConfirmacion, setModalMessageConfirmar] = useState("");
   const [tituloModal, setTituloModal] = useState("");
@@ -308,23 +309,18 @@ const ContenidoCursos = () => {
     <div className="flex-1  mt-7 md:p-6 md:mt-0">
       <header className="bg-[#4B7DBF] text-white rounded-lg flex items-center gap-4 p-4 mb-6">
         <FaUserGraduate className="text-3xl sm:text-5xl" />
-        <h1 className="text-lg sm:text-xl font-bold">Módulo: Mis cursos</h1>
+        <h1 className="text-lg sm:text-xl font-bold">Módulo: Asistencia</h1>
       </header>
 
       <main className="sd:h-screen  bg-white py-2 px-4 rounded-lg shadow">
         <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
           {view === "listarAlumnos" ? (
             <div className="overflow-auto mb-0 flex-1">
-              <ListarAlumnosCurso onBackToListado={handleBackToListado} />
+              <ListarAlumnosAsistencia onBackToListado={handleBackToListado} />
+
+              
             </div>
-          ) : view === "editar" ? (
-            <div className="overflow-auto mb-0 flex-1">
-              <EditarAlumno
-              onBackToListado={handleBackToListado}               
-              onFormValidation={handleFormValidation}
-              onSuccess={handleSuccess}/>
-            </div>
-          ) : view === "detalle" ? (
+          )  : view === "detalle" ? (
             <div className="overflow-auto mb-0 flex-1">
               <DetalleAlumno onBackToListado={handleBackToListado}/>
             </div>
@@ -605,4 +601,4 @@ const ContenidoCursos = () => {
   );
 };
 
-export default ContenidoCursos;
+export default ContenidoAsistencia;

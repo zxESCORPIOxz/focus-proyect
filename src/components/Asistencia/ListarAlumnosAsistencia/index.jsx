@@ -12,16 +12,33 @@ import PopupConfirmacion from '../../../Popups/Confirmacion';
 import { editarNota } from '../../../lib/apiEditarNotas';
 import PopupSuccesGeneral from '../../../Popups/SuccesGeneral';
 import { useCursoContext } from '../../../context/CursoContext';
+import { listarAlumnosAsistencia } from '../../../lib/apiListarAlumnosAsistencia';
+import { crearRegitroAsistencia } from '../../../lib/apiCrearRegistroAsistencia';
+import { guardarAsistencia } from '../../../lib/apiGuardarAsistencia';
 
-const ListarAlumnosCurso = ({onBackToListado}) => { 
+const ListarAlumnosAsistencia = ({onBackToListado}) => { 
+
+
+
+    const getFechaHoyAPI = () => {
+        const today = new Date();
+        today.setDate(today.getDate()); // Resta un día
+        return today.toISOString().split("T")[0] ; // Formato YYYY-MM-DD HH:MM:SS
+    };
+
+    const fechaHoyAPI= getFechaHoyAPI();
+
+    const getFechaHoy= () => {
+        const today = new Date();
+        today.setDate(today.getDate() ); // Resta un día
+        return today.toISOString().split("T")[0] + " " + today.toTimeString().split(" ")[0]; // Formato YYYY-MM-DD HH:MM:SS
+    };
+
+    const fechaHoy = getFechaHoy();
+
   //PAGINACION
   const itemsPerPage = 8; 
   const [currentPage, setCurrentPage] = useState(1);
-  // Usamos un estado para manejar los acordeones de los alumnos
-  const [activeAlumno, setActiveAlumno] = useState(null);
-    
-  // Usamos un estado para manejar los acordeones de las etapas
-  const [activeEtapas, setActiveEtapas] = useState({});
   const [alumnos, setAlumnos] = useState([]); 
   const [filteredAlumnos, setFilteredAlumnos] = useState([]); 
   const [loading, setLoading] = useState(true); 
@@ -35,7 +52,18 @@ const ListarAlumnosCurso = ({onBackToListado}) => {
   const [successMessage, setSuccessMessage] = useState("");
   const [showPopupSucces, setShowPopupSucces] = useState(false);
   const { clearAuth,token } = useAuthContext(); 
-const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
+  const { cursoSeleccionado } = useCursoContext(); 
+
+  
+
+  const [fechaActual, setFechaActual] = useState(fechaHoy);
+  const [fechaActualAPI, setFechaActualAPI] = useState(fechaHoyAPI);
+
+  const [mensajeError, setMensajeError] = useState('');
+  const [mensaje, setMensaje] = useState("");
+  const [asistencias, setAsistencias] = useState([]);
+  const [showCreateButton, setShowCreateButton] = useState(false);
+
   const navigate = useNavigate(); 
   const { institucionId } = useRolContext(); 
   const [status, setStatus] = useState("");
@@ -43,8 +71,6 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
   const [errorMessage, setErrorMessage] = useState({
     });
 
-  const [editandoNota, setEditandoNota] = useState(null); // Guarda el ID de la nota en edición
-  const [nuevaNota, setNuevaNota] = useState({});
 
 
   // Función para manejar el cambio de página
@@ -52,36 +78,27 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
     setCurrentPage(pageNumber);
   };
 
-  const toggleAlumnoAccordion = (alumnoId) => {
-    // Alterna el estado del acordeón del alumno
-    setActiveAlumno((prev) => (prev === alumnoId ? null : alumnoId));
-  };
 
-  const toggleEtapaAccordion = (alumnoId, etapaIndex) => {
-    const etapaKey = `${alumnoId}-${etapaIndex}`;
-    setActiveEtapas((prev) => ({
-      ...prev,
-      [etapaKey]: !prev[etapaKey],
-    }));
-  };
 
-  
 
   const fetchAlumnos = async () => { 
     setLoading(true); 
     try { 
       const id_curso = cursoSeleccionado.id_curso; 
-      const response = await listarAlumnosNotas(token, id_curso); 
+      const response = await listarAlumnosAsistencia(token, id_curso,fechaActualAPI); 
       if (response.status === 'SUCCESS') { 
         const alumnosData = response.alumnos; 
         setAlumnos(alumnosData); 
-        setFilteredAlumnos(alumnosData); 
+        setFilteredAlumnos(alumnosData);
+        setMensajeError("") 
       } else if (response.status === "LOGOUT") {
         setStatus("LOGOUT");
         setModalMessageError(response.message);
         setShowErrorPopup(true);
       } else if (response.status === "FAILED") {
         setModalMessageError(response.message);
+        setMensajeError(response.message)
+        setShowCreateButton(true);
         setAlumnos([]);
         setFilteredAlumnos([]);
         setShowErrorPopup(true);
@@ -96,6 +113,13 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
       setLoading(false); 
     } 
   };
+  useEffect(() => {
+    if (cursoSeleccionado) {
+      fetchAlumnos();  // Llama a la función para obtener los alumnos solo si la fecha está definida
+    }
+  }, [cursoSeleccionado]);
+
+ 
 
   useEffect(() => {
     if (modalMessageError) {
@@ -103,11 +127,7 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
     }
   }, [modalMessageError]);
 
-  useEffect(() => { 
-    if (institucionId && cursoSeleccionado.id_curso) { 
-      fetchAlumnos(); 
-    } 
-  }, [token, institucionId, cursoSeleccionado]);
+
 
   // Función para aplicar filtros
   const aplicarFiltros = () => {
@@ -121,6 +141,7 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
   
     setFilteredAlumnos(alumnosFiltrados);
     setCurrentPage(1);
+    fetchAlumnos();
   };
 
   // Calcular los alumnos a mostrar
@@ -202,17 +223,7 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
 
   const totalPages = Math.ceil(filteredAlumnos.length / itemsPerPage);
 
-  const handleBackToListado = () => {
-    guardarAlumnoSeleccionado(""); 
-    setView("listado")           
-                                                                                                 
-  };
-  
 
-  const handleEditarNota = (nota) => {
-    setEditandoNota(nota.id_nota_alumno_curso);
-    setNuevaNota({ ...nuevaNota, [nota.id_nota_alumno_curso]: nota.nota_obtenida });
-  };
   const handleClosePopupSucces = () => {
     setShowPopupSucces(false)
   };
@@ -220,19 +231,79 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
   const actualizarListaAlumnos = () => {
     fetchAlumnos();
   };
-  const handleGuardarNota = async (idNota) => {
-    const requestBody = {
-      token: token,
-      notas: [{ id_nota_alumno_curso: idNota, nueva_nota: nuevaNota[idNota] }]
-    };
-  
-    try {
-      const response = await editarNota(requestBody);
-      if (response && response.status === "SUCCESS") {
-        setEditandoNota(null);
+
+
+  const handleCrearRegistroAsistencia  = async () => { 
+    const today = new Date();
+    today.setDate(today.getDate());
+    const hora = today.toTimeString().split(" ")[0];
+    const fechaHora =`${fechaActualAPI} ${hora}`
+
+    setLoading(true); 
+    try { 
+      const id_curso = cursoSeleccionado.id_curso; 
+      const response = await crearRegitroAsistencia(token, id_curso,fechaHora); 
+      if (response.status === 'SUCCESS') { 
         setShowPopupSucces(true);
         setSuccessMessage(response.message)
         actualizarListaAlumnos();
+        setTimeout(() => {
+          setShowPopupSucces(false);
+        }, 2500);
+      } else if (response.status === "LOGOUT") {
+        setStatus("LOGOUT");
+        setModalMessageError(response.message);
+        setShowErrorPopup(true);
+      } else if (response.status === "FAILED") {
+        setModalMessageError(response.message);
+        setShowErrorPopup(true);
+      }
+    } catch (error) { 
+      console.error('Error al listar alumnos:', error); 
+      setModalMessageError('Ocurrió un error inesperado.'); 
+      setAlumnos([]);
+      setFilteredAlumnos([]);
+      setShowErrorPopup(true); 
+    } finally { 
+      setLoading(false); 
+    } 
+  };
+
+  const handleEstadoChange = (idAlumno, nuevoEstado) => {
+    // Actualizar el estado de asistencia del alumno en filteredAlumnos
+    const alumnosActualizados = filteredAlumnos.map((alumno) => {
+      if (alumno.id_alumno === idAlumno) {
+        return {
+          ...alumno,
+          estado_asistencia: nuevoEstado, // Actualiza el estado del alumno
+        };
+      }
+      return alumno;
+    });
+  
+    // Actualiza el estado de filteredAlumnos para reflejar el cambio
+    setFilteredAlumnos(alumnosActualizados);
+  };
+  const asistencias1 = filteredAlumnos
+
+  const handleGuardarAsistencias = async () => {
+    const asistencias = filteredAlumnos
+    .filter((alumno) => alumno.estado_asistencia !== alumno.estado_asistencia_original)  // Compara con el valor original
+    .map((alumno) => ({
+      id_asistencia: alumno.id_asistencia,  // Supongo que id_alumno es el id de la asistencia
+      estado: alumno.estado_asistencia,
+      observaciones: alumno.observaciones,
+    }));
+    
+
+  if (asistencias.length > 0) {
+    try {
+      const response = await guardarAsistencia(token,asistencias);
+      if (response && response.status === "SUCCESS") {
+        setShowPopupSucces(true);
+        setSuccessMessage(response.message)
+        actualizarListaAlumnos();
+        
         setTimeout(() => {
           setShowPopupSucces(false);
         }, 2500);
@@ -248,6 +319,11 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
     } catch (error) {
       console.error("Error en la actualización:", error);
     }
+} else {
+    // No se hicieron cambios
+    setModalMessageError("No se detectaron cambios en las asistencias.");
+    setShowErrorPopup(true);
+  }
   };
 
 
@@ -262,8 +338,8 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
   return (
     <>
       <div className="bg-white rounded-lg shadow-lg p-3 w-full ">
-        <div className='flex justify-between items-center'>
-          <h1 className="text-3xl font-bold mb-6 text-blue-600">Alumnos Listado</h1>
+      <div className='flex justify-between items-center'>
+          <h1 className="text-3xl font-bold mb-6 text-blue-600">Asistencia de Alumnos</h1>
           <button
               type="button"
               onClick={onBackToListado}
@@ -272,16 +348,26 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
               Regresar
           </button>
         </div>
-        
         <main className="sd:h-screen  bg-white py-2 px-4 rounded-lg shadow">
           <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
-            { view === "editar" ? (
-              <div className="overflow-auto mb-0 flex-1">
-                EDTIAR
-              </div>
-            ): (
+            
               <>
                 <div className="flex flex-col md:flex-row gap-4 mb-6">
+                    <div className="flex-1">
+                    <label
+                      htmlFor="filter-fecha"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Fecha de Asistencia:
+                    </label>
+                    <input
+                    id="filter-fecha"
+                    type="date"
+                    className="w-full mt-1 p-2 border border-gray-300 rounded-lg"
+                    value={fechaActualAPI}
+                    onChange={(e) => setFechaActualAPI(e.target.value)} // Aquí actualizamos el valor de fecha
+                    />
+                  </div>
                   <div className="flex-1">
                     <label
                       htmlFor="filter-numero-documento"
@@ -322,94 +408,51 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
                   </div>
                 
                 
-                  ) : currentAlumnos.length === 0 ? (
-                    <p className="text-center text-gray-500">No existen alumnos para listar.</p>
-                  ) : (
+                ) : mensajeError ? (
+                    <div className="flex flex-col items-center space-y-4">
+                    {/* Mensaje de error en la parte superior */}
+                    <p className="text-red-500">{mensajeError}</p>
+
+                    {/* Botón centrado */}
+                    {showCreateButton && (
+                        <div className="flex justify-center">
+                            <button
+                                onClick={handleCrearRegistroAsistencia}
+                                className="bg-blue-500 mt-11 text-white py-2 px-4 rounded-lg"
+                            >
+                                Crear Registro
+                            </button>
+                        </div>
+                    )}
+                    </div>
+                ) : (
                     <>
                     <div>
-                      {currentAlumnos.map((alumno) => (
-                        <div key={alumno.id_alumno} className="accordion border border-gray-300 rounded-lg bg-white shadow-md mb-4">
-                          {/* Acordeón del Alumno */}
-                          <div
-                            className="accordion-header p-4 cursor-pointer bg-gray-100 border-b border-gray-300 text-gray-800 font-bold flex justify-between items-center"
-                            onClick={() => toggleAlumnoAccordion(alumno.id_alumno)}
-                          >
-                            {alumno.nombre + " " + alumno.apellido_paterno + " " + alumno.apellido_materno} (DNI: {alumno.num_documento})
-                            <span className={`toggle-icon text-xl transform transition-transform duration-300 ${activeAlumno === alumno.id_alumno ? 'rotate-180' : ''}`}>
-                              ▼
-                            </span>
-                          </div>
-                          {activeAlumno === alumno.id_alumno && (
-                            <div className="accordion-content p-4 border-t border-gray-300 overflow-x-auto">
-                              {alumno.etapas?.map((etapa, index) => (
-                                <div key={index} className="accordion border border-gray-300 rounded-lg mb-2">
-                                  {/* Acordeón de la Etapa */}
-                                  <div
-                                    className="accordion-header p-4 cursor-pointer bg-gray-100 border-b border-gray-300 text-gray-800 font-bold flex justify-between items-center"
-                                    onClick={() => toggleEtapaAccordion(alumno.id_alumno, index)}
-                                  >
-                                    {etapa.nombre_etapa}
-                                    <span className={`toggle-icon text-xl transform transition-transform duration-300 ${activeEtapas[`${alumno.id_alumno}-${index}`] ? 'rotate-180' : ''}`}>
-                                      ▼
-                                    </span>
-                                  </div>
-                                  {activeEtapas[`${alumno.id_alumno}-${index}`] && (
-                                    <table className="w-full border-collapse mt-4">
-                                      <thead>
-                                        <tr>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Actividad</th>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Peso</th>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Nota Obtenida</th>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Acciones</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody>
-                                        {etapa.notas?.map((nota, idx) => (
-                                          <tr key={idx}>
-                                            <td className="text-center border border-gray-300 p-2">{nota.nombre}</td>
-                                            <td className="text-center border border-gray-300 p-2">{nota.peso * 100}%</td> {/* Peso en porcentaje */}
-                                            <td className="text-center border border-gray-300 p-2">
-                                              {editandoNota === nota.id_nota_alumno_curso ? (
-                                                <input
-                                                  type="number"
-                                                  className="border p-1 w-16 text-center"
-                                                  value={nuevaNota[nota.id_nota_alumno_curso] || ""}
-                                                  onChange={(e) =>
-                                                    setNuevaNota({ ...nuevaNota, [nota.id_nota_alumno_curso]: e.target.value })
-                                                  }
-                                                />
-                                              ) : (
-                                                nota.nota_obtenida
-                                              )}
-                                            </td>
-                                            <td className="text-center border border-gray-300 p-2">
-                                              {editandoNota === nota.id_nota_alumno_curso ? (
-                                                <button
-                                                  className="bg-green-500 text-white py-1 px-2 rounded-md hover:bg-green-600"
-                                                  onClick={() => handleGuardarNota(nota.id_nota_alumno_curso)}
-                                                >
-                                                  Guardar
-                                                </button>
-                                              ) : (
-                                                <button
-                                                  className="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600"
-                                                  onClick={() => handleEditarNota(nota)}
-                                                >
-                                                  <FaEdit />
-                                                </button>
-                                              )}
-                                            </td>
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
-                                  )}
+                        {currentAlumnos.map((alumno) => (
+                            <div key={alumno.id_alumno} className="p-4 border-b">
+                                <div className="flex justify-between items-center">
+                                    <span>{alumno.nombre +" "+ alumno.apellido_paterno + " " + alumno.apellido_materno}</span>
+                                    <select
+                                        value={alumno.estado_asistencia}
+                                        onChange={(e) => handleEstadoChange(alumno.id_alumno, e.target.value)} // Llama a handleEstadoChange
+                                        className="p-2 border rounded"
+                                        >
+                                        <option value="PENDIENTE">PENDIENTE</option>
+                                        <option value="PRESENTE">PRESENTE</option>
+                                        <option value="TARDANZA">TARDANZA</option>
+                                        <option value="AUSENTE">AUSENTE</option>
+                                        <option value="JUSTIFICADO">JUSTIFICADO</option>
+                                    </select>
+
                                 </div>
-                              ))}
                             </div>
-                          )}
-                        </div>
-                      ))}
+                        ))}
+                        <button
+                            onClick={handleGuardarAsistencias}
+                            className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg"
+                        >
+                            Guardar Asistencias
+                        </button>
                     </div>
                   </>
                 )}
@@ -454,7 +497,6 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
                 )}
 
               </>
-            )}
             </div>
           </main>
       </div>
@@ -465,4 +507,4 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
   );
 };
 
-export default ListarAlumnosCurso;
+export default ListarAlumnosAsistencia;

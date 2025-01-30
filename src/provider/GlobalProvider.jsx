@@ -10,6 +10,7 @@ import { AlumnoProvider } from "../context/AlumnoContext";
 import { DocenteProvider } from "../context/DocenteContext";
 import { CursoProvider } from "../context/CursoContext";
 
+
 const GlobalProvider = ({ children }) => {
 
 

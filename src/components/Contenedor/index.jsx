@@ -3,6 +3,7 @@ import Menu from '../Menu'
 import ContenidoAlumnos from '../ContenidoAlumnos'
 import ContenidoDocentes from '../ContenidoDocentes';
 import ContenidoCursos from '../ContenidoCursos';
+import ContenidoAsistencia from '../ContenidoAsistencia';
 
 const Contenedor = ({ roles }) => {
   const [activeOption, setActiveOption] = useState(null); // Opción activa
@@ -10,6 +11,7 @@ const Contenedor = ({ roles }) => {
     alumnos: false,
     docentes: false,
     cursos: false,
+    asistencia: false,
   });
  
 
@@ -18,7 +20,8 @@ const Contenedor = ({ roles }) => {
     const sections = {
       alumnos: roles.includes('Coordinador') || roles.includes('Docente'), // Acceso a 'alumnos'
       docentes: roles.includes('Coordinador'), // Acceso a 'docentes'
-      cursos: roles.includes('Coordinador') || roles.includes('Docente'), // Acceso a 'cursos'
+      cursos: roles.includes('Coordinador') || roles.includes('Docente'),
+      asistencia: roles.includes('Coordinador') || roles.includes('Docente'),  // Acceso a 'cursos'
     };
     
 
@@ -46,6 +49,7 @@ const Contenedor = ({ roles }) => {
         {availableSections.alumnos && activeOption === 'alumnos' && <ContenidoAlumnos />}
         {availableSections.docentes && activeOption === 'docentes' && <ContenidoDocentes />}
         {availableSections.cursos && activeOption === 'cursos' && <ContenidoCursos />}
+        {availableSections.asistencia && activeOption === 'asistencia' && <ContenidoAsistencia />}
 
         {/* Mostrar mensaje si no hay ninguna sección activa */}
         {!activeOption && <p>Selecciona una opción del menú</p>}
