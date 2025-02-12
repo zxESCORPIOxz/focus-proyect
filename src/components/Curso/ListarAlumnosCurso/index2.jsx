@@ -327,27 +327,27 @@
     </div>
 
     {filteredCursos.length > itemsPerPage && (
-    <div className="flex justify-center items-center mt-4">
-      <button
-        onClick={handlePrevPage}
-        className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-        disabled={currentPage === 1}
-      >
-        Anterior
-      </button>
+   <div className="flex flex-wrap justify-center items-center mt-4 gap-2 sm:gap-3">
+    <button
+      onClick={handlePrevPage}
+      className={`bg-[#4B7DBF] text-white text-sm sm:text-base px-2 md:px-3 py-1 sm:px-4 sm:py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed ' : ''}`}
+      disabled={currentPage === 1}
+    >
+      Anterior
+    </button>
 
-      <div className="mx-1 flex justify-center gap-2">
-              {renderPageButtons()}
-            </div>
-
-      <button
-        onClick={handleNextPage}
-        className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-        disabled={currentPage === totalPages}
-      >
-        Siguiente
-      </button>
+    <div className="mx-0 flex flex-wrap justify-center md:gap-2 gap-0">
+      {renderPageButtons()}
     </div>
+
+    <button
+      onClick={handleNextPage}
+      className={`bg-[#4B7DBF] text-white text-sm sm:text-base px-2 md:px-3 py-1 sm:px-4 sm:py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+      disabled={currentPage === totalPages}
+    >
+      Siguiente
+    </button>
+  </div>
     )}
       {showErrorPopup && (
         <PopupErrorRegister 

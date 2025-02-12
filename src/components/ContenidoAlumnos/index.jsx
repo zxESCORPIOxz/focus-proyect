@@ -217,45 +217,47 @@ const ContenidoAlumnos = () => {
 
   const getPageNumbers = () => {
     const pageNumbers = [];
-    
+
     if (totalPages <= 10) {
       for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
       }
     } else {
-      if (currentPage <= 6) {
-        for (let i = 1; i <= 9; i++) {
+      if (currentPage <= 3) {  
+        for (let i = 1; i <= 3; i++) {
           pageNumbers.push(i);
         }
-        pageNumbers.push("...");
-      } else if (currentPage >= totalPages - 5) {
+        pageNumbers.push("...", totalPages);
+      } else if (currentPage >= totalPages - 2) {  
         pageNumbers.push(1, "...");
-        for (let i = totalPages - 8; i <= totalPages; i++) {
+        for (let i = totalPages - 2; i <= totalPages; i++) {
           pageNumbers.push(i);
         }
-      } else {
+      } else {  
         pageNumbers.push(1, "...");
-        for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
           pageNumbers.push(i);
         }
         pageNumbers.push("...", totalPages);
       }
     }
-    return pageNumbers;
-  };
 
+    return pageNumbers;
+};
   const renderPageButtons = () => {
     const pageNumbers = getPageNumbers();
 
     return pageNumbers.map((number, index) => {
       if (number === "...") {
-        return <span key={index} className="mx-1 text-xl text-[#4B7DBF]">. . .</span>;
+        return <span key={index} className="mx-1 text-sm sm:text-xl text-[#4B7DBF]">. . . </span>;
       }
       return (
         <button
           key={index}
           onClick={() => handlePageChange(number)}
-          className={`mx-1 px-4 py-2 rounded-lg ${number === currentPage ? "bg-[#5155A6] text-white" : "bg-[#4B7DBF] text-white"} hover:bg-blue-600`}
+          className={`mx-0 md:mx-1 px-2 py-1 text-xs md:px-4 md:py-1 sm:text-base rounded-lg 
+            ${number === currentPage ? "bg-[#5155A6] text-white" : "bg-[#4B7DBF] text-white"} 
+            hover:bg-blue-600`}
           
         >
           {number}
@@ -636,27 +638,27 @@ const ContenidoAlumnos = () => {
             </div>
 
             {filteredAlumnos.length > itemsPerPage && (
-            <div className="flex justify-center items-center mt-4">
-              <button
-                onClick={handlePrevPage}
-                className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={currentPage === 1}
-              >
-                Anterior
-              </button>
+           <div className="flex flex-wrap justify-center items-center mt-4 gap-2 sm:gap-3">
+           <button
+             onClick={handlePrevPage}
+             className={`bg-[#4B7DBF] text-white text-sm sm:text-base px-2 md:px-3 py-1 sm:px-4 sm:py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === 1 ? 'opacity-50 cursor-not-allowed ' : ''}`}
+             disabled={currentPage === 1}
+           >
+             Anterior
+           </button>
 
-              <div className="mx-1 flex justify-center gap-2">
-                      {renderPageButtons()}
-                    </div>
+           <div className="mx-0 flex flex-wrap justify-center md:gap-2 gap-0">
+             {renderPageButtons()}
+           </div>
 
-              <button
-                onClick={handleNextPage}
-                className={`bg-[#4B7DBF] text-white px-4 py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={currentPage === totalPages}
-              >
-                Siguiente
-              </button>
-            </div>
+           <button
+             onClick={handleNextPage}
+             className={`bg-[#4B7DBF] text-white text-sm sm:text-base px-2 md:px-3 py-1 sm:px-4 sm:py-2 rounded-lg hover:bg-[#3A6B9F] ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+             disabled={currentPage === totalPages}
+           >
+             Siguiente
+           </button>
+         </div>
             )}
               {showErrorPopup && (
                 <PopupErrorRegister 
