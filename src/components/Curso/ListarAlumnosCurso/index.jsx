@@ -130,10 +130,13 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
 
   const handleClosePopupError = () => {
     setShowErrorPopup(false);
+
     if (status === "LOGOUT") {
       clearAuth(); 
       navigate("/login"); 
     }
+
+    
     
   };
 
@@ -211,7 +214,11 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
 
   const handleEditarNota = (nota) => {
     setEditandoNota(nota.id_nota_alumno_curso);
-    setNuevaNota({ ...nuevaNota, [nota.id_nota_alumno_curso]: nota.nota_obtenida });
+    setNuevaNota((prevNotas) => ({
+      ...prevNotas,
+      [nota.id_nota_alumno_curso]: nota.nota_obtenida
+    }));
+    
   };
   const handleClosePopupSucces = () => {
     setShowPopupSucces(false)
@@ -221,6 +228,15 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
     fetchAlumnos();
   };
   const handleGuardarNota = async (idNota) => {
+
+    if (nuevaNota[idNota] < 0 || nuevaNota[idNota] > 20) {
+      setModalMessageError('La nota debe estar entre 0 y 20.');
+      setShowErrorPopup(true);
+      
+      return;
+    }
+
+  
     const requestBody = {
       token: token,
       notas: [{ id_nota_alumno_curso: idNota, nueva_nota: nuevaNota[idNota] }]
@@ -252,16 +268,16 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
 
 
   const handleSuccess = () => {
-    guardarAlumnoSeleccionado(""); 
+    
     fetchAlumnos();
     setView("listado") 
-  };
+  };                                       
 
 
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-lg p-3 w-full ">
+      <div className="bg-white rounded-lg shadow-lg p-3 w-full mr-2">
         <div className='flex justify-between items-center'>
           <h1 className="text-3xl font-bold mb-6 text-blue-600">Alumnos Listado</h1>
           <button
@@ -273,8 +289,8 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
           </button>
         </div>
         
-        <main className="sd:h-screen  bg-white py-2 px-4 rounded-lg shadow">
-          <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
+        <main className="  bg-white py-0 px-0 ml-0 rounded-lg ">
+          <div className=" md:h-[calc(92vh-160px)] flex flex-col justify-between mr-2">
             { view === "editar" ? (
               <div className="overflow-auto mb-0 flex-1">
                 EDTIAR
@@ -328,7 +344,7 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
                     <>
                     <div>
                       {currentAlumnos.map((alumno) => (
-                        <div key={alumno.id_alumno} className="accordion border border-gray-300 rounded-lg bg-white shadow-md mb-4">
+                        <div key={alumno.id_alumno} className="accordion border  bg-white shadow-md mb-4">
                           {/* Acordeón del Alumno */}
                           <div
                             className="accordion-header p-4 cursor-pointer bg-gray-100 border-b border-gray-300 text-gray-800 font-bold flex justify-between items-center"
@@ -354,45 +370,72 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
                                     </span>
                                   </div>
                                   {activeEtapas[`${alumno.id_alumno}-${index}`] && (
-                                    <table className="w-full border-collapse mt-4">
+                                    <div className="overflow-x-auto">
+                                    <table className="w-full border-collapse mt-4 mr-1 ">
                                       <thead>
                                         <tr>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Actividad</th>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Peso</th>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Nota Obtenida</th>
-                                          <th className="text-center border border-gray-300 p-2 bg-gray-100">Acciones</th>
+                                          <th className="text-center border border-gray-300 p-1 md:p-2 bg-gray-100 md:min-w-[150px]">
+                                            Actividad
+                                          </th>
+                                          <th className="text-center border border-gray-300 p-1 md:p-2 bg-gray-100 md:min-w-[80px]">
+                                            Peso
+                                          </th>
+                                          <th className="text-center border border-gray-300 p-1 md:p-2 bg-gray-100 md:min-w-[120px]">
+                                            Nota Obtenida
+                                          </th>
+                                          <th className="text-center border border-gray-300 p-1 md:p-2 bg-gray-100 md:min-w-[100px]">
+                                            Acciones
+                                          </th>
                                         </tr>
                                       </thead>
                                       <tbody>
                                         {etapa.notas?.map((nota, idx) => (
                                           <tr key={idx}>
-                                            <td className="text-center border border-gray-300 p-2">{nota.nombre}</td>
-                                            <td className="text-center border border-gray-300 p-2">{nota.peso * 100}%</td> {/* Peso en porcentaje */}
+                                            <td className="text-center border border-gray-300 p-2">
+                                              {nota.nombre}
+                                            </td>
+                                            <td className="text-center border border-gray-300 p-2">
+                                              {nota.peso * 100}%
+                                            </td>
                                             <td className="text-center border border-gray-300 p-2">
                                               {editandoNota === nota.id_nota_alumno_curso ? (
                                                 <input
                                                   type="number"
-                                                  className="border p-1 w-16 text-center"
+                                                  className="border p-1 w-full md:w-16 text-center"
                                                   value={nuevaNota[nota.id_nota_alumno_curso] || ""}
                                                   onChange={(e) =>
-                                                    setNuevaNota({ ...nuevaNota, [nota.id_nota_alumno_curso]: e.target.value })
+                                                    setNuevaNota({
+                                                      ...nuevaNota,
+                                                      [nota.id_nota_alumno_curso]: e.target.value,
+                                                    })
                                                   }
                                                 />
                                               ) : (
-                                                nota.nota_obtenida
+                                                <span
+                                                  className={`${
+                                                    nota.nota_obtenida <= 10 ? "text-red-500" : "text-blue-500"
+                                                  }`}
+                                                >
+                                                  {nota.nota_obtenida}
+                                                </span>
                                               )}
                                             </td>
-                                            <td className="text-center border border-gray-300 p-2">
+                                            <td className="text-center border border-gray-300 p-1">
                                               {editandoNota === nota.id_nota_alumno_curso ? (
                                                 <button
-                                                  className="bg-green-500 text-white py-1 px-2 rounded-md hover:bg-green-600"
+                                                  disabled={nuevaNota[nota.id_nota_alumno_curso] === nota.nota_obtenida}
+                                                  className={`bg-green-500 text-white py-1 px-2 rounded-md hover:bg-green-600 w-full md:w-auto ${
+                                                    nuevaNota[nota.id_nota_alumno_curso] === nota.nota_obtenida
+                                                      ? "opacity-50 cursor-not-allowed"
+                                                      : ""
+                                                  }`}
                                                   onClick={() => handleGuardarNota(nota.id_nota_alumno_curso)}
                                                 >
                                                   Guardar
                                                 </button>
                                               ) : (
                                                 <button
-                                                  className="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600"
+                                                  className="bg-blue-500 text-white py-1 px-2 rounded-md items-center hover:bg-blue-600 md:w-auto"
                                                   onClick={() => handleEditarNota(nota)}
                                                 >
                                                   <FaEdit />
@@ -402,7 +445,9 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
                                           </tr>
                                         ))}
                                       </tbody>
+
                                     </table>
+                                  </div>
                                   )}
                                 </div>
                               ))}
@@ -416,7 +461,7 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
               
               </div>
 
-              {/* Botones de Paginación */}
+              {filteredAlumnos.length > itemsPerPage && (
               <div className="flex justify-center items-center mt-4">
                 <button
                   onClick={handlePrevPage}
@@ -438,7 +483,7 @@ const { guardarCursoSeleccionado,cursoSeleccionado } = useCursoContext();
                   Siguiente
                 </button>
               </div>
-                
+              )}
                 {showErrorPopup && (
                   <PopupErrorRegister 
                     message={modalMessageError} 

@@ -8,7 +8,6 @@ import { useAuthContext } from '../../../context/AuthContext';
 import { useRolContext } from '../../../context/RolContext'; 
 import { desactivarAlumno } from '../../../lib/apiDesactivarAlumno'; 
 import PopupConfirmacion from '../../../Popups/Confirmacion'; 
- 
 import { editarNota } from '../../../lib/apiEditarNotas';
 import PopupSuccesGeneral from '../../../Popups/SuccesGeneral';
 import { useCursoContext } from '../../../context/CursoContext';
@@ -270,61 +269,79 @@ const ListarAlumnosAsistencia = ({onBackToListado}) => {
   };
 
   const handleEstadoChange = (idAlumno, nuevoEstado) => {
-    // Actualizar el estado de asistencia del alumno en filteredAlumnos
+    // Actualizar solo el estado de asistencia de un alumno sin modificar los demás campos
     const alumnosActualizados = filteredAlumnos.map((alumno) => {
-      if (alumno.id_alumno === idAlumno) {
-        return {
-          ...alumno,
-          estado_asistencia: nuevoEstado, // Actualiza el estado del alumno
-        };
-      }
-      return alumno;
+        if (alumno.id_alumno === idAlumno) {
+            return {
+                ...alumno, // Mantén los demás campos sin cambios
+                estado_asistencia: nuevoEstado, // Solo cambia el estado de asistencia
+            };
+        }
+        return alumno; // Si no es el alumno que estamos actualizando, retorna sin cambios
     });
-  
-    // Actualiza el estado de filteredAlumnos para reflejar el cambio
-    setFilteredAlumnos(alumnosActualizados);
-  };
-  const asistencias1 = filteredAlumnos
 
-  const handleGuardarAsistencias = async () => {
+    setFilteredAlumnos(alumnosActualizados); // Actualiza el estado
+};
+
+const handleObservacionChange = (id_alumno, nuevaObservacion) => {
+    // Actualizar solo la observación de un alumno sin modificar los demás campos
+    const alumnosActualizados = filteredAlumnos.map((alumno) => {
+        if (alumno.id_alumno === id_alumno) {
+            return {
+                ...alumno, // Mantén los demás campos sin cambios
+                observaciones: nuevaObservacion, // Solo cambia la observación
+            };
+        }
+        return alumno; // Si no es el alumno que estamos actualizando, retorna sin cambios
+    });
+
+    setFilteredAlumnos(alumnosActualizados); // Actualiza el estado
+};
+const asistencias1 = filteredAlumnos
+        .filter((alumno) => alumno.estado_asistencia !== alumno.estado_asistencia_original || alumno.observaciones !== alumno.observaciones_original) // Compara con el valor original
+        .map((alumno) => ({
+            id_asistencia: alumno.id_asistencia,
+            estado: alumno.estado_asistencia,
+            observaciones: alumno.observaciones,
+        }));
+
+        console.log(asistencias1)
+const handleGuardarAsistencias = async () => {
+    // Filtrar solo los alumnos que tienen cambios en el estado o en las observaciones
     const asistencias = filteredAlumnos
-    .filter((alumno) => alumno.estado_asistencia !== alumno.estado_asistencia_original)  // Compara con el valor original
-    .map((alumno) => ({
-      id_asistencia: alumno.id_asistencia,  // Supongo que id_alumno es el id de la asistencia
-      estado: alumno.estado_asistencia,
-      observaciones: alumno.observaciones,
-    }));
+        .filter((alumno) => alumno.estado_asistencia !== alumno.estado_asistencia_original || alumno.observaciones !== alumno.observaciones_original) // Compara con el valor original
+        .map((alumno) => ({
+            id_asistencia: alumno.id_asistencia,
+            estado: alumno.estado_asistencia,
+            observaciones: alumno.observaciones,
+        }));
     
-
-  if (asistencias.length > 0) {
-    try {
-      const response = await guardarAsistencia(token,asistencias);
-      if (response && response.status === "SUCCESS") {
-        setShowPopupSucces(true);
-        setSuccessMessage(response.message)
-        actualizarListaAlumnos();
-        
-        setTimeout(() => {
-          setShowPopupSucces(false);
-        }, 2500);
-      }else if (response.status === "LOGOUT") {
-        setStatus("LOGOUT");
-        setModalMessageError(response.message); // Configura el mensaje de error
-        setShowErrorPopup(true); // Muestra el popup de error
-      } else if (response.status === "FAILED") {
-        setModalMessageError(response.message);
+    if (asistencias.length > 0) {
+        try {
+            const response = await guardarAsistencia(token, asistencias);
+            if (response && response.status === "SUCCESS") {
+                setShowPopupSucces(true);
+                setSuccessMessage(response.message);
+                actualizarListaAlumnos();
+                setTimeout(() => {
+                    setShowPopupSucces(false);
+                }, 2500);
+            } else if (response.status === "LOGOUT") {
+                setStatus("LOGOUT");
+                setModalMessageError(response.message);
+                setShowErrorPopup(true);
+            } else if (response.status === "FAILED") {
+                setModalMessageError(response.message);
+                setShowErrorPopup(true);
+            }
+        } catch (error) {
+            console.error("Error en la actualización:", error);
+        }
+    } else {
+        setModalMessageError("No se detectaron cambios en las asistencias.");
         setShowErrorPopup(true);
-
-      }
-    } catch (error) {
-      console.error("Error en la actualización:", error);
     }
-} else {
-    // No se hicieron cambios
-    setModalMessageError("No se detectaron cambios en las asistencias.");
-    setShowErrorPopup(true);
-  }
-  };
+};
 
 
   const handleSuccess = () => {
@@ -338,7 +355,7 @@ const ListarAlumnosAsistencia = ({onBackToListado}) => {
   return (
     <>
       <div className="bg-white rounded-lg shadow-lg p-3 w-full ">
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center mx-2 '>
           <h1 className="text-3xl font-bold mb-6 text-blue-600">Asistencia de Alumnos</h1>
           <button
               type="button"
@@ -348,7 +365,7 @@ const ListarAlumnosAsistencia = ({onBackToListado}) => {
               Regresar
           </button>
         </div>
-        <main className="sd:h-screen  bg-white py-2 px-4 rounded-lg shadow">
+        <main className="sd:h-screen sd:w-screen mx-2   bg-white py-2 px-4 rounded-lg shadow">
           <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
             
               <>
@@ -426,40 +443,52 @@ const ListarAlumnosAsistencia = ({onBackToListado}) => {
                     )}
                     </div>
                 ) : (
-                    <>
-                    <div>
-                        {currentAlumnos.map((alumno) => (
-                            <div key={alumno.id_alumno} className="p-4 border-b">
-                                <div className="flex justify-between items-center">
-                                    <span>{alumno.nombre +" "+ alumno.apellido_paterno + " " + alumno.apellido_materno}</span>
-                                    <select
-                                        value={alumno.estado_asistencia}
-                                        onChange={(e) => handleEstadoChange(alumno.id_alumno, e.target.value)} // Llama a handleEstadoChange
-                                        className="p-2 border rounded"
-                                        >
-                                        <option value="PENDIENTE">PENDIENTE</option>
-                                        <option value="PRESENTE">PRESENTE</option>
-                                        <option value="TARDANZA">TARDANZA</option>
-                                        <option value="AUSENTE">AUSENTE</option>
-                                        <option value="JUSTIFICADO">JUSTIFICADO</option>
-                                    </select>
-
-                                </div>
-                            </div>
-                        ))}
-                        <button
-                            onClick={handleGuardarAsistencias}
-                            className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg"
-                        >
-                            Guardar Asistencias
-                        </button>
-                    </div>
-                  </>
+                  <>
+                  <div>
+                    {currentAlumnos.map((alumno) => (
+                      <div key={alumno.id_alumno} className="p-4 border-b">
+                        <div className="flex justify-between mb-2 items-center">
+                          <span className='font-bold'>{alumno.nombre + " " + alumno.apellido_paterno + " " + alumno.apellido_materno}</span>
+                          <select
+                            value={alumno.estado_asistencia}
+                            onChange={(e) => handleEstadoChange(alumno.id_alumno, e.target.value)} // Llama a handleEstadoChange
+                            className="p-2 border rounded"
+                          >
+                            <option value="PENDIENTE">PENDIENTE</option>
+                            <option value="PRESENTE">PRESENTE</option>
+                            <option value="TARDANZA">TARDANZA</option>
+                            <option value="AUSENTE">AUSENTE</option>
+                            <option value="JUSTIFICADO">JUSTIFICADO</option>
+                          </select>
+                        </div>
+                
+                        {/* Sección de observaciones */}
+                        <div>
+                        <input
+                          type="text"
+                          value={alumno.observaciones || ''}
+                          onChange={(e) => handleObservacionChange(alumno.id_alumno, e.target.value)} // Llama a la función de cambio
+                          className="p-2 border rounded w-full"
+                          placeholder="Agregar observación"
+                        />
+                        </div>
+                      </div>
+                    ))}
+                
+                    <button
+                      onClick={handleGuardarAsistencias}
+                      className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg"
+                    >
+                      Guardar Asistencias
+                    </button>
+                  </div>
+                </>
+                
                 )}
               
               </div>
 
-              {/* Botones de Paginación */}
+              {filteredAlumnos.length > itemsPerPage && (
               <div className="flex justify-center items-center mt-4">
                 <button
                   onClick={handlePrevPage}
@@ -481,7 +510,7 @@ const ListarAlumnosAsistencia = ({onBackToListado}) => {
                   Siguiente
                 </button>
               </div>
-                
+              )}
                 {showErrorPopup && (
                   <PopupErrorRegister 
                     message={modalMessageError} 

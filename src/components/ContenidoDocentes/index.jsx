@@ -288,13 +288,13 @@ const ContenidoDocentes = () => {
 
   return (
     <div className="flex-1 mt-7 md:p-6 md:mt-0">
-      <header className="bg-[#4B7DBF] text-white rounded-lg flex items-center gap-4 p-4 mb-6">
+      <header className="bg-[#4B7DBF] sd:mx-2  text-white rounded-lg flex items-center gap-4 p-4 mb-6">
         <FaChalkboardTeacher className="text-3xl sm:text-5xl" />
         <h1 className="text-lg sm:text-xl font-bold">Módulo: Gestión de Docentes</h1>
       </header>
 
-      <main className="sd:h-screen  bg-white py-2 px-4 rounded-lg shadow">
-        <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
+      <main className="sd:h-screen sd:w-screen mx-2   bg-white py-2 px-4 rounded-lg shadow">
+        <div className="sd:h-full  md:h-[calc(92vh-160px)] flex flex-col justify-between">
           {view === "formulario" ? (
             <div className="overflow-auto mb-0 flex-1">
               <FormularioNuevoDocente onBackToListado={handleBackToListado} />
@@ -600,7 +600,7 @@ const ContenidoDocentes = () => {
                     )}
             </div>
 
-            {/* Botones de Paginación */}
+            {filteredDocentes.length > itemsPerPage && (
             <div className="flex justify-center items-center mt-4">
               <button
                 onClick={handlePrevPage}
@@ -622,7 +622,7 @@ const ContenidoDocentes = () => {
                 Siguiente
               </button>
             </div>
-              
+            )}
               {showErrorPopup && (
                 <PopupErrorRegister 
                   message={modalMessageError} 

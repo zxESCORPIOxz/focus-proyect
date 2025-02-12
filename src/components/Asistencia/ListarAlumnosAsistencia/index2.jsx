@@ -73,7 +73,7 @@ const ListarAlumnosAsistencia = ({ token, id_curso }) => {
     return (
         <div>
             <div className="bg-white rounded-lg shadow-lg p-3 w-full">
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center mx-2 ">
                     <h1 className="text-3xl font-bold mb-6 text-blue-600">Asistencia de Alumnos</h1>
                     <button
                         type="button"
@@ -83,7 +83,7 @@ const ListarAlumnosAsistencia = ({ token, id_curso }) => {
                         Regresar
                     </button>
                 </div>
-                <main className="sd:h-screen bg-white py-2 px-4 rounded-lg shadow">
+                <main className="sd:h-screen sd:w-screen mx-2  bg-white py-2 px-4 rounded-lg shadow">
                     <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
                         {loading ? (
                             <div className="text-center">Cargando...</div>

@@ -10,12 +10,17 @@ import {
   FaBars,
   FaNewspaper,
   FaSignOutAlt,
-  FaTimes, 
+  FaTimes,
+  FaBook,
+  FaClipboardCheck,
+  FaUser,
+  FaUsers, 
 } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
 import { useRolContext } from '../../context/RolContext';
 import { List } from 'lucide-react';
+import PopupErrorRegister from '../../Popups/RegistroError';
 
 const defaultImage = "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=institucion";
 const defaultUser = "https://ll6aenqwm9.execute-api.us-east-1.amazonaws.com/service/util-01-imagen?img=perfil_default";
@@ -26,12 +31,26 @@ const Menu = ({ activeOption, setActiveOption }) => {
   const { clearAuth } = useAuthContext();
   const [role, setRole] = useState(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [modalMessageError, setModalMessageError] = useState(''); 
+
+  const [showErrorPopup, setShowErrorPopup] = useState(false); 
   
+  const handleClosePopupError = () => {
+    setShowErrorPopup(false);
+    navigate("/roles"); 
+    
+    
+  };
   
-  
+  useEffect(() => {
+    if (matriculas.length === 0) {
+      setShowErrorPopup(true)
+      setModalMessageError("No existe matricula");
+    }
+  }, [matriculas, navigate]);
   // console.log("Desde menu el id guardado :"+selectedMatriculaId)
   useEffect(() => {
-    // Obtener el rol desde localStorage
+    
     
     setRole(rolSeleccionado);
     
@@ -81,8 +100,8 @@ const Menu = ({ activeOption, setActiveOption }) => {
 
   // Menú para Apoderado
   const guardianMenuItems = [
-    { id: 'hijo', icon: <FaUserGraduate />, label: 'Ver Información de Hijo' },
-    { id: 'comunicarse', icon: <FaInfoCircle />, label: 'Comunicarse con Docente' },
+    // { id: 'hijo', icon: <FaUserGraduate />, label: 'Ver Información de Hijo' },
+    { id: 'apoderado', icon: <FaUsers />, label: 'Mis Hijos' },
   ];
 
   // Determinar qué menú mostrar según el rol
@@ -236,7 +255,13 @@ const Menu = ({ activeOption, setActiveOption }) => {
             </button>
           </div>
         </aside>
-        
+        {showErrorPopup && (
+        <PopupErrorRegister
+          message={modalMessageError} 
+          onClose={handleClosePopupError} 
+        />
+        )}
+  
       </>
     );
     

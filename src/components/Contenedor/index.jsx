@@ -4,6 +4,7 @@ import ContenidoAlumnos from '../ContenidoAlumnos'
 import ContenidoDocentes from '../ContenidoDocentes';
 import ContenidoCursos from '../ContenidoCursos';
 import ContenidoAsistencia from '../ContenidoAsistencia';
+import ContenidoApoderado from '../Apoderado/ContenidoApoderado';
 
 const Contenedor = ({ roles }) => {
   const [activeOption, setActiveOption] = useState(null); // Opción activa
@@ -12,6 +13,7 @@ const Contenedor = ({ roles }) => {
     docentes: false,
     cursos: false,
     asistencia: false,
+    apoderado: false,
   });
  
 
@@ -21,7 +23,8 @@ const Contenedor = ({ roles }) => {
       alumnos: roles.includes('Coordinador') || roles.includes('Docente'), // Acceso a 'alumnos'
       docentes: roles.includes('Coordinador'), // Acceso a 'docentes'
       cursos: roles.includes('Coordinador') || roles.includes('Docente'),
-      asistencia: roles.includes('Coordinador') || roles.includes('Docente'),  // Acceso a 'cursos'
+      asistencia: roles.includes('Coordinador') || roles.includes('Docente'),
+      apoderado: roles.includes('Coordinador') || roles.includes('Apoderado'),  // Acceso a 'cursos'
     };
     
 
@@ -33,6 +36,8 @@ const Contenedor = ({ roles }) => {
       setActiveOption('alumnos');
     } else if (roles.includes('Docente')) {
       setActiveOption('cursos');
+    }else if (roles.includes('Apoderado')) {
+      setActiveOption('apoderado');
     } else {
       setActiveOption(null);
     }
@@ -50,7 +55,7 @@ const Contenedor = ({ roles }) => {
         {availableSections.docentes && activeOption === 'docentes' && <ContenidoDocentes />}
         {availableSections.cursos && activeOption === 'cursos' && <ContenidoCursos />}
         {availableSections.asistencia && activeOption === 'asistencia' && <ContenidoAsistencia />}
-
+        {availableSections.apoderado && activeOption === 'apoderado' && <ContenidoApoderado />}
         {/* Mostrar mensaje si no hay ninguna sección activa */}
         {!activeOption && <p>Selecciona una opción del menú</p>}
       </div>

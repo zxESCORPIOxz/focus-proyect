@@ -326,7 +326,7 @@
             )}
     </div>
 
-    {/* Botones de Paginación */}
+    {filteredCursos.length > itemsPerPage && (
     <div className="flex justify-center items-center mt-4">
       <button
         onClick={handlePrevPage}
@@ -348,7 +348,7 @@
         Siguiente
       </button>
     </div>
-      
+    )}
       {showErrorPopup && (
         <PopupErrorRegister 
           message={modalMessageError} 

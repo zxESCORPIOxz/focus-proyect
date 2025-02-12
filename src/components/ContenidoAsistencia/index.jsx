@@ -20,6 +20,7 @@ import { listarCursos } from '../../lib/apiListarCursos';
 import ListarAlumnosCurso from '../Curso/ListarAlumnosCurso';
 import { useCursoContext } from '../../context/CursoContext';
 import ListarAlumnosAsistencia from '../Asistencia/ListarAlumnosAsistencia';
+import DetalleCurso from '../Curso/DetalleCurso';
 
 const ContenidoAsistencia = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -307,12 +308,12 @@ const ContenidoAsistencia = () => {
 
   return (
     <div className="flex-1  mt-7 md:p-6 md:mt-0">
-      <header className="bg-[#4B7DBF] text-white rounded-lg flex items-center gap-4 p-4 mb-6">
+      <header className="bg-[#4B7DBF] mx-2  text-white rounded-lg flex items-center gap-4 p-4 mb-6">
         <FaUserGraduate className="text-3xl sm:text-5xl" />
         <h1 className="text-lg sm:text-xl font-bold">Módulo: Asistencia</h1>
       </header>
 
-      <main className="sd:h-screen  bg-white py-2 px-4 rounded-lg shadow">
+      <main className="sd:h-screen sd:w-screen mx-2   bg-white py-2 px-4 rounded-lg shadow">
         <div className="sd:h-full md:h-[calc(92vh-160px)] flex flex-col justify-between">
           {view === "listarAlumnos" ? (
             <div className="overflow-auto mb-0 flex-1">
@@ -322,7 +323,7 @@ const ContenidoAsistencia = () => {
             </div>
           )  : view === "detalle" ? (
             <div className="overflow-auto mb-0 flex-1">
-              <DetalleAlumno onBackToListado={handleBackToListado}/>
+              <DetalleCurso onBackToListado={handleBackToListado}/>
             </div>
             
           ) : (
@@ -562,7 +563,7 @@ const ContenidoAsistencia = () => {
                     )}
             </div>
 
-            {/* Botones de Paginación */}
+            {filteredCursos.length > itemsPerPage && (
             <div className="flex justify-center items-center mt-4">
               <button
                 onClick={handlePrevPage}
@@ -584,7 +585,7 @@ const ContenidoAsistencia = () => {
                 Siguiente
               </button>
             </div>
-              
+            )}
               {showErrorPopup && (
                 <PopupErrorRegister 
                   message={modalMessageError} 
