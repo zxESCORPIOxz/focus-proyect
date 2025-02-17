@@ -311,7 +311,7 @@ const ContenidoCursos = () => {
     <div className="flex-1  mt-7 md:p-6 md:mt-0">
       <header className="bg-[#4B7DBF] text-white rounded-lg mx-2 flex items-center gap-4 p-4 mb-6">
         <FaUserGraduate className="text-3xl sm:text-5xl" />
-        <h1 className="text-lg sm:text-xl font-bold">Módulo: Mis cursos</h1>
+        <h1 className="text-lg sm:text-xl font-bold">Módulo: Notas</h1>
       </header>
 
       <main className="sd:h-screen sd:w-screen mx-2  bg-white py-2 px-4 rounded-lg shadow">
