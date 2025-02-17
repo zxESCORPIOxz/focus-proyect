@@ -86,7 +86,7 @@ const Menu = ({ activeOption, setActiveOption }) => {
 
   // Menú para Docente
   const teacherMenuItems = [
-    { id: 'cursos', icon: <FaBookOpen />, label: 'Mis Cursos' },
+    { id: 'cursos', icon: <FaBookOpen />, label: 'Notas' },
     // { id: 'informes', icon: <FaClipboardList />, label: 'Mis Informes' },
     { id: 'asistencia', icon: <FaSchool />, label: 'Asistencia' },
   ];
