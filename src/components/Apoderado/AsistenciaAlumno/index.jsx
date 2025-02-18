@@ -237,7 +237,17 @@ const AsistenciaAlumnosApoderado = ({onBackToListado}) => {
                         <div key={alumno.id_asistencia} className="bg-white  p-4 rounded-lg md:w-full shadow-md border mt-3">
                           <div className="flex justify-between mb-2">
                             <span className='font-bold text-lg text-gray-800'>{alumno.fecha}</span>
-                            <span className={`p-2 rounded-lg ${alumno.estado === 'Presente' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'}`}>
+                            <span
+                              className={`p-2 rounded-lg text-white ${
+                                alumno.estado === "PRESENTE"
+                                  ? "bg-green-500"
+                                  : alumno.estado === "AUSENTE"
+                                  ? "bg-red-500"
+                                  : alumno.estado === "JUSTIFICADO"
+                                  ? "bg-blue-500"
+                                  : "bg-yellow-500"
+                              }`}
+                            >
                               {alumno.estado}
                             </span>
                           </div>

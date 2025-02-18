@@ -113,10 +113,14 @@ const ListarAlumnosAsistencia = ({onBackToListado}) => {
     } 
   };
   useEffect(() => {
-    if (cursoSeleccionado) {
-      fetchAlumnos();  // Llama a la función para obtener los alumnos solo si la fecha está definida
+    if (fechaActualAPI) {
+      fetchAlumnos(); 
     }
-  }, [cursoSeleccionado]);
+  }, [fechaActualAPI]);
+
+  useEffect(() => {
+    aplicarFiltros();
+  }, []);
 
  
 
@@ -131,23 +135,23 @@ const ListarAlumnosAsistencia = ({onBackToListado}) => {
   // Función para aplicar filtros
   const aplicarFiltros = () => {
     let alumnosFiltrados = alumnos;
-
+    
     if (filtroNumeroDocumento) {
       alumnosFiltrados = alumnosFiltrados.filter(
         (alumno) => alumno.num_documento === filtroNumeroDocumento
       );
     }
-  
+ 
     setFilteredAlumnos(alumnosFiltrados);
     setCurrentPage(1);
-    fetchAlumnos();
+    // fetchAlumnos();
   };
 
   // Calcular los alumnos a mostrar
   const indexOfLastAlumno = currentPage * itemsPerPage;
   const indexOfFirstAlumno = indexOfLastAlumno - itemsPerPage;
   const currentAlumnos = filteredAlumnos.slice(indexOfFirstAlumno, indexOfLastAlumno);
-
+  
   const handleClosePopupError = () => {
     setShowErrorPopup(false);
     if (status === "LOGOUT") {
@@ -307,7 +311,6 @@ const asistencias1 = filteredAlumnos
             observaciones: alumno.observaciones,
         }));
 
-        console.log(asistencias1)
 const handleGuardarAsistencias = async () => {
     // Filtrar solo los alumnos que tienen cambios en el estado o en las observaciones
     const asistencias = filteredAlumnos
@@ -351,7 +354,6 @@ const handleGuardarAsistencias = async () => {
     fetchAlumnos();
     setView("listado") 
   };
-
 
 
   return (
@@ -427,7 +429,9 @@ const handleGuardarAsistencias = async () => {
                   </div>
                 
                 
-                ) : mensajeError ? (
+                ): currentAlumnos.length === 0 ? (
+                  <p className="text-center text-gray-500">No existen alumnos para listar.</p>
+                )  : mensajeError ? (
                     <div className="flex flex-col items-center space-y-4">
                     {/* Mensaje de error en la parte superior */}
                     <p className="text-red-500">{mensajeError}</p>
@@ -476,13 +480,19 @@ const handleGuardarAsistencias = async () => {
                         </div>
                       </div>
                     ))}
-                
-                    <button
-                      onClick={handleGuardarAsistencias}
-                      className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg"
-                    >
-                      Guardar Asistencias
-                    </button>
+                    {filteredAlumnos.length > 0 && (
+                      <button
+                        onClick={handleGuardarAsistencias}
+                        className="mt-4 bg-green-500 text-white py-2 px-4 rounded-lg"
+                      >
+                        Guardar Asistencias
+                      </button>  
+
+
+                    )}
+
+                   
+                    
                   </div>
                 </>
                 
