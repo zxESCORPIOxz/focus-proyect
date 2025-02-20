@@ -429,9 +429,7 @@ const handleGuardarAsistencias = async () => {
                   </div>
                 
                 
-                ): currentAlumnos.length === 0 ? (
-                  <p className="text-center text-gray-500">No existen alumnos para listar.</p>
-                )  : mensajeError ? (
+                ) : mensajeError ? (
                     <div className="flex flex-col items-center space-y-4">
                     {/* Mensaje de error en la parte superior */}
                     <p className="text-red-500">{mensajeError}</p>
